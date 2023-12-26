@@ -1,14 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react'
 import ChatBoxHeader from './ChatBoxHeader'
 import Message from '../../../components/Message'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { callApi } from '../../../apis/APIs'
+import { addMessage } from '../../../redux/messages/action'
 
 const ChatBox = ({ openMsgs, setOpenMsgs }) => {
     const scrollRef = useRef()
+    const dispatch = useDispatch()
     const [newMessage, setNewMessage] = useState("")
     const openChatBox = useSelector(state => state.chatBoxReducer?.open)
-    let messages = useSelector(state => state.messagesReducer?.data)
+    let messages = useSelector(state => state.messagesReducer.getMessage?.data)
+    let updatedMessage = useSelector(state => state.messagesReducer.addMessage?.data)
+    console.log("updatedMessage: ", updatedMessage);
     const userId = useSelector(state => state.userDataReducer?.data?._id)
     console.log("messages:: ", messages, userId);
     const msgs = [
@@ -34,15 +38,8 @@ const ChatBox = ({ openMsgs, setOpenMsgs }) => {
     const handleSend = async () => {
         const message = { conversationId: messages[0]?.conversationId, senderId: userId, text: newMessage }
         console.log(newMessage, message);
-        try {
-            const res = await callApi(`message`, 'POST', message, true);
-            console.log("res.data.data::  ", res.data.data.text, message);
-            setNewMessage("")
-            // messages = [...messages, res.data.data.text]
-            // setUser(res.data.data);
-        } catch (err) {
-            console.log(err);
-        }
+        dispatch(addMessage(message))
+        setNewMessage("")
     }
 
     // scroll to last message
