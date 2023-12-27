@@ -11,8 +11,8 @@ const ChatBox = ({ openMsgs, setOpenMsgs }) => {
     const [newMessage, setNewMessage] = useState("")
     const openChatBox = useSelector(state => state.chatBoxReducer?.open)
     let messages = useSelector(state => state.messagesReducer.getMessage?.data)
-    let updatedMessage = useSelector(state => state.messagesReducer.addMessage?.data)
-    console.log("updatedMessage: ", updatedMessage);
+    let conversationId = useSelector(state => state.messagesReducer.conversationId?.data)
+    console.log("conversationId:: ", conversationId);
     const userId = useSelector(state => state.userDataReducer?.data?._id)
     console.log("messages:: ", messages, userId);
     const msgs = [
@@ -36,7 +36,7 @@ const ChatBox = ({ openMsgs, setOpenMsgs }) => {
         },
     ]
     const handleSend = async () => {
-        const message = { conversationId: messages[0]?.conversationId, senderId: userId, text: newMessage }
+        const message = { conversationId: conversationId, senderId: userId, text: newMessage }
         console.log(newMessage, message);
         dispatch(addMessage(message))
         setNewMessage("")

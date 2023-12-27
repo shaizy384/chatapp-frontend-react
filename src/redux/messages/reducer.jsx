@@ -5,8 +5,14 @@ const initial_state = {
         loading: false,
         data: null,
         error: null,
+        conversationId: null
     },
     addMessage: {
+        loading: false,
+        data: null,
+        error: null,
+    },
+    conversationId: {
         loading: false,
         data: null,
         error: null,
@@ -16,9 +22,15 @@ const initial_state = {
 const messagesReducer = (state = initial_state, { type, payload }) => {
     switch (type) {
         case GET_MESSAGES:
+            console.log("amb amb amb: ", payload);
             return {
                 ...state,
-                getMessage: { loading: true }
+                getMessage: {
+                    loading: true
+                },
+                conversationId: {
+                    data: payload
+                }
             }
 
         case GET_MESSAGES_SUCCESS:

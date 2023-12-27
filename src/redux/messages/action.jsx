@@ -3,7 +3,7 @@ import { callApi } from "../../apis/APIs";
 import { GET_MESSAGES, GET_MESSAGES_FAILURE, GET_MESSAGES_SUCCESS, ADD_MESSAGE, ADD_MESSAGE_FAILURE, ADD_MESSAGE_SUCCESS } from "../actionTypes"
 
 export const getMessages = (id) => async (dispatch) => {
-    dispatch({ type: GET_MESSAGES })
+    dispatch({ type: GET_MESSAGES, payload: id })
     const url = `message/${id}`
     const Data = await callApi(url, 'GET', '', true);
     if (Data.status === 200) {
