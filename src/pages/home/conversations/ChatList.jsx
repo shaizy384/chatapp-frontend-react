@@ -5,7 +5,7 @@ import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
 import ChatListItem from './ChatListItem'
 
 const ChatList = () => {
-    const chatList = useSelector(state => state.conversationReducer.data)
+    const chatList = useSelector(state => state.conversationReducer.getConversation.data)
     const people = [
         {
             name: 'Leslie Alexander',

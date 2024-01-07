@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { callApi } from '../../../apis/APIs'
 import { addMessage, setArrivalMessage } from '../../../redux/messages/action'
 import { io } from 'socket.io-client'
+import { setOnlineFriends } from '../../../redux/onlineFriends/action'
 
 const ENDPOINT = "http://localhost:2801"    // backend_host
 
@@ -18,15 +19,14 @@ const ChatBox = ({ openMsgs, setOpenMsgs }) => {
     let messages = useSelector(state => state.messagesReducer.getMessage?.data)
     let currentConversation = useSelector(state => state.messagesReducer.currentConversation?.data)
     const userId = useSelector(state => state.userDataReducer?.data?._id)
-    // const members = useSelector(state => state.conversationReducer.data)
-    console.log("currentConversation:: ", currentConversation);
-    console.log("messages:: ", messages, userId);
+    // const members = useSelector(state => state.conversationReducer.getConversation.data)
+    // console.log("currentConversation:: ", currentConversation);
+    // console.log("messages:: ", messages, userId);
 
     // socket io
     useEffect(() => {
         socket.current = io(ENDPOINT)
         socket.current.on("getMessage", data => {
-            // console.log(data);
             const { senderId, text } = data
             dispatch(setArrivalMessage({ senderId, text, createdAt: Date.now() }))
         })
@@ -36,6 +36,7 @@ const ChatBox = ({ openMsgs, setOpenMsgs }) => {
         socket.current.emit("addUser", userId)
         socket.current.on("getUsers", users => {
             console.log("users: ", users);
+            dispatch(setOnlineFriends(users))
         })
     }, [socket, userId])
 
@@ -49,10 +50,8 @@ const ChatBox = ({ openMsgs, setOpenMsgs }) => {
     const handleSend = async () => {
         const receiverId = currentConversation.members?.find(member => member !== userId)
         socket.current.emit("sendMessage", { senderId: userId, receiverId, text: newMessage })
-        console.log("socket on send msg: ",socket,{ senderId: userId, receiverId, text: newMessage });
 
         const message = { conversationId: currentConversation.conversationId, senderId: userId, text: newMessage }
-        console.log(newMessage, message);
         dispatch(addMessage(message))
         setNewMessage("")
     }
@@ -64,7 +63,7 @@ const ChatBox = ({ openMsgs, setOpenMsgs }) => {
 
     return (
         <>
-            {!openChatBox ? <div className='w-full sm:rounded-t-2xl shadow bg-sky-50 relative flex justify-center items-center'>
+            {!openChatBox ? <div className='w-full sm:rounded-t-2xl shadow bg-sky-50 relative hidden sm:flex justify-center items-center'>
                 <div className='text-center'>
                     <span className='text-lg mb-4'>Open a converation to start a chat</span><br />
                     <span className='text-sm'>🔒Your personel messages are end to end encrypted</span>

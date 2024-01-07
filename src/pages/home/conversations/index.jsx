@@ -3,16 +3,16 @@ import ChatList from './ChatList'
 import { useDispatch, useSelector } from 'react-redux'
 import { Logout } from '../../../redux/auth/action'
 import { useNavigate } from 'react-router-dom'
-import { getConversations } from '../../../redux/conversations/action'
+import { chatListFilter, getConversations } from '../../../redux/conversations/action'
 
 const Conversations = ({ openMsgs, setOpenMsgs }) => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const chatList = useSelector(state => state.conversationReducer.data)
+    const chatList = useSelector(state => state.conversationReducer.getConversation.data)
     const [showOpt, setShowOpt] = useState(false)
     const openChatBox = useSelector(state => state.chatBoxReducer.open)
-    
-    console.log("chatList ",chatList);
+
+    console.log("chatList ", chatList);
     useEffect(() => {
         if (!chatList) {
             dispatch(getConversations())
@@ -22,6 +22,10 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
     const logout = () => {
         dispatch(Logout())
         navigate("/login")
+    }
+    const handleChange = (e) => {
+            dispatch(chatListFilter(e.target.value))
+            console.log(e.target.value);
     }
     return (
         <div className={(openChatBox && 'hidden') + ' flex sm:flex sm:w-[18rem] w-full bg-white sm:rounded-t-2xl shadow flex-col h-full'}>
@@ -73,20 +77,20 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
             <div className='bg-gray-100 rounded-full py-2 px-2 mx-5 mt-3'>
                 <ul className="flex justify-between">
                     <li>
-                        <input type="radio" id="hosting-small" name="hosting" value="hosting-small" className="hidden peer" defaultChecked="checked" />
-                        <label htmlFor="hosting-small" className="inline-flex items-center justify-between w-full px-5 py-1.5 text-gray-500 peer-checked:bg-white peer-checked:shadow rounded-full cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                        <input type="radio" id="all" name="chat-filter" value="all" className="hidden peer" defaultChecked="checked" onChange={handleChange} />
+                        <label htmlFor="all" className="inline-flex items-center justify-between w-full px-5 py-1.5 text-gray-500 peer-checked:bg-white peer-checked:shadow rounded-full cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                             All
                         </label>
                     </li>
                     <li>
-                        <input type="radio" id="hosting-medium" name="hosting" value="hosting-medium" className="hidden peer" />
-                        <label htmlFor="hosting-medium" className="inline-flex items-center justify-between w-full px-5 py-1.5 text-gray-500 peer-checked:bg-white peer-checked:shadow rounded-full cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                        <input type="radio" id="active" name="chat-filter" value="active" className="hidden peer" onChange={handleChange} />
+                        <label htmlFor="active" className="inline-flex items-center justify-between w-full px-5 py-1.5 text-gray-500 peer-checked:bg-white peer-checked:shadow rounded-full cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                             Active
                         </label>
                     </li>
                     <li>
-                        <input type="radio" id="hosting-big" name="hosting" value="hosting-big" className="hidden peer" />
-                        <label htmlFor="hosting-big" className="inline-flex items-center justify-between w-full px-5 py-1.5 text-gray-500 peer-checked:bg-white peer-checked:shadow rounded-full cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                        <input type="radio" id="unread" name="chat-filter" value="unread" className="hidden peer" onChange={handleChange} />
+                        <label htmlFor="unread" className="inline-flex items-center justify-between w-full px-5 py-1.5 text-gray-500 peer-checked:bg-white peer-checked:shadow rounded-full cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                             Unread
                         </label>
                     </li>

@@ -9,6 +9,22 @@ import { getMessages, setCurrentConversation } from '../../../redux/messages/act
 const ChatListItem = ({ _id, members }) => {
     const dispatch = useDispatch()
     const [user, setUser] = useState()
+    const [showUser, setShowUser] = useState(false)
+    const chatListFilter = useSelector(state => state.conversationReducer.chatListFilter.data)
+    console.log("chatListFilter: ", chatListFilter);
+    const onlineFriends = useSelector(state => state.onlineFriends.setOnlineFriends.data)
+    const online = onlineFriends?.filter(user => user.userId === members[1]).length > 0
+    console.log("onlne: ", onlineFriends, online, _id);
+    useEffect(() => {
+        if (chatListFilter === "all") {
+            setShowUser(true);
+        } else if (chatListFilter === "active" && online) {
+            setShowUser(true);
+        } else {
+            setShowUser(false);
+        }
+    }, [chatListFilter])
+
     useEffect(() => {
         const getUser = async () => {
             try {
@@ -27,7 +43,7 @@ const ChatListItem = ({ _id, members }) => {
     }
     return (
         <>
-            <li className="flex justify-between gap-x-6 py-5 px-5 cursor-pointer hover:bg-gray-200" onClick={handleChat}>
+            {showUser && <li className="flex justify-between gap-x-6 py-5 px-5 cursor-pointer hover:bg-gray-200" onClick={handleChat}>
                 <div className="flex min-w-0 gap-x-4">
                     <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={defaultAvatar} alt="defaultAvatar" />
                     <div className="min-w-0 flex-auto">
@@ -35,21 +51,21 @@ const ChatListItem = ({ _id, members }) => {
                         <p className="mt-1 truncate text-md leading-5 text-gray-500">My message</p>
                     </div>
                 </div>
-                {/* <div className="shrink-0 flex flex-col items-end">
-                    {person.lastSeen ? (
+                <div className="shrink-0 flex flex-col items-end">
+                    {/* {person.lastSeen ? (
                         <p className="mt-1 text-md leading-5 text-gray-500">
                             <time dateTime='2023-01-23T13:23Z'>3h ago</time>
                         </p>
-                    ) : (
-                        <div className="mt-1 flex items-center gap-x-1.5">
-                            <div className="flex-none rounded-full bg-emerald-500/20 p-1">
-                                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                            </div>
-                            <p className="text-xs leading-5 text-gray-500">Online</p>
+                    ) : ( */}
+                    {online && <div className="mt-1 flex items-center gap-x-1.5">
+                        <div className="flex-none rounded-full bg-emerald-500/20 p-1">
+                            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                         </div>
-                    )}
-                </div> */}
-            </li>
+                        <p className="text-xs leading-5 text-gray-500">Online</p>
+                    </div>}
+                    {/* )} */}
+                </div>
+            </li>}
         </>
     )
 }
