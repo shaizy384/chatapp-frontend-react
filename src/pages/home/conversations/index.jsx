@@ -73,20 +73,20 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
             <div className='bg-gray-100 rounded-full py-2 px-2 mx-5 mt-3'>
                 <ul className="flex justify-between">
                     <li>
-                        <input type="radio" id="hosting-small" name="hosting" value="hosting-small" className="hidden peer" checked="checked" />
-                        <label for="hosting-small" className="inline-flex items-center justify-between w-full px-5 py-1.5 text-gray-500 peer-checked:bg-white peer-checked:shadow rounded-full cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                        <input type="radio" id="hosting-small" name="hosting" value="hosting-small" className="hidden peer" defaultChecked="checked" />
+                        <label htmlFor="hosting-small" className="inline-flex items-center justify-between w-full px-5 py-1.5 text-gray-500 peer-checked:bg-white peer-checked:shadow rounded-full cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                             All
                         </label>
                     </li>
                     <li>
                         <input type="radio" id="hosting-medium" name="hosting" value="hosting-medium" className="hidden peer" />
-                        <label for="hosting-medium" className="inline-flex items-center justify-between w-full px-5 py-1.5 text-gray-500 peer-checked:bg-white peer-checked:shadow rounded-full cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                        <label htmlFor="hosting-medium" className="inline-flex items-center justify-between w-full px-5 py-1.5 text-gray-500 peer-checked:bg-white peer-checked:shadow rounded-full cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                             Active
                         </label>
                     </li>
                     <li>
                         <input type="radio" id="hosting-big" name="hosting" value="hosting-big" className="hidden peer" />
-                        <label for="hosting-big" className="inline-flex items-center justify-between w-full px-5 py-1.5 text-gray-500 peer-checked:bg-white peer-checked:shadow rounded-full cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                        <label htmlFor="hosting-big" className="inline-flex items-center justify-between w-full px-5 py-1.5 text-gray-500 peer-checked:bg-white peer-checked:shadow rounded-full cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                             Unread
                         </label>
                     </li>

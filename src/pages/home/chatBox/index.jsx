@@ -3,40 +3,55 @@ import ChatBoxHeader from './ChatBoxHeader'
 import Message from '../../../components/Message'
 import { useDispatch, useSelector } from 'react-redux'
 import { callApi } from '../../../apis/APIs'
-import { addMessage } from '../../../redux/messages/action'
+import { addMessage, setArrivalMessage } from '../../../redux/messages/action'
+import { io } from 'socket.io-client'
+
+const ENDPOINT = "http://localhost:2801"    // backend_host
 
 const ChatBox = ({ openMsgs, setOpenMsgs }) => {
+    const socket = useRef()
     const scrollRef = useRef()
     const dispatch = useDispatch()
     const [newMessage, setNewMessage] = useState("")
+    // const [socket, setSocket] = useState(null)
     const openChatBox = useSelector(state => state.chatBoxReducer?.open)
     let messages = useSelector(state => state.messagesReducer.getMessage?.data)
-    let conversationId = useSelector(state => state.messagesReducer.conversationId?.data)
-    console.log("conversationId:: ", conversationId);
+    let currentConversation = useSelector(state => state.messagesReducer.currentConversation?.data)
     const userId = useSelector(state => state.userDataReducer?.data?._id)
+    // const members = useSelector(state => state.conversationReducer.data)
+    console.log("currentConversation:: ", currentConversation);
     console.log("messages:: ", messages, userId);
-    const msgs = [
-        {
-            id: 1,
-            msg: "Hello",
-            time: "8:29 am",
-            own: false
-        },
-        {
-            id: 2,
-            msg: "Hi, How're you?",
-            time: "8:29 am",
-            own: true
-        },
-        {
-            id: 3,
-            msg: "I'm good. What about you?",
-            time: "8:29 am",
-            own: false
-        },
-    ]
+
+    // socket io
+    useEffect(() => {
+        socket.current = io(ENDPOINT)
+        socket.current.on("getMessage", data => {
+            // console.log(data);
+            const { senderId, text } = data
+            dispatch(setArrivalMessage({ senderId, text, createdAt: Date.now() }))
+        })
+    }, [])
+
+    useEffect(() => {
+        socket.current.emit("addUser", userId)
+        socket.current.on("getUsers", users => {
+            console.log("users: ", users);
+        })
+    }, [socket, userId])
+
+    // useEffect(() => {
+    //     // socket?.on("welcome", message => {
+    //     //     console.log("socket message: ", message);
+    //     // })
+    //     socket.emit("addUser", userId)
+    // }, [socket])
+    console.log(socket);
     const handleSend = async () => {
-        const message = { conversationId: conversationId, senderId: userId, text: newMessage }
+        const receiverId = currentConversation.members?.find(member => member !== userId)
+        socket.current.emit("sendMessage", { senderId: userId, receiverId, text: newMessage })
+        console.log("socket on send msg: ",socket,{ senderId: userId, receiverId, text: newMessage });
+
+        const message = { conversationId: currentConversation.conversationId, senderId: userId, text: newMessage }
         console.log(newMessage, message);
         dispatch(addMessage(message))
         setNewMessage("")

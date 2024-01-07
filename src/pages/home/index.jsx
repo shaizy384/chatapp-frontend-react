@@ -11,8 +11,8 @@ const Home = () => {
     useEffect(() => {
         if (!userData) {
             dispatch(getUserData())
-    console.log("amb:: ", userData);
-}
+            console.log("amb:: ", userData);
+        }
     }, [])
 
 

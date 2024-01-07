@@ -4,7 +4,7 @@ import { openChatBox } from '../../../redux/openChatBox/action'
 import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
 import { getFriendDetails } from '../../../redux/friendDetails/action'
 import { callApi } from '../../../apis/APIs'
-import { getMessages } from '../../../redux/messages/action'
+import { getMessages, setCurrentConversation } from '../../../redux/messages/action'
 
 const ChatListItem = ({ _id, members }) => {
     const dispatch = useDispatch()
@@ -12,7 +12,7 @@ const ChatListItem = ({ _id, members }) => {
     useEffect(() => {
         const getUser = async () => {
             try {
-                const res = await callApi(`friends/${members[1]}`, 'GET', '', true);;
+                const res = await callApi(`friends/${members[1]}`, 'GET', '', true);
                 setUser(res.data.data);
             } catch (err) {
                 console.log(err);
@@ -23,6 +23,7 @@ const ChatListItem = ({ _id, members }) => {
     const handleChat = () => {
         dispatch(openChatBox())
         dispatch(getMessages(_id))
+        dispatch(setCurrentConversation({ conversationId: _id, members }))
     }
     return (
         <>

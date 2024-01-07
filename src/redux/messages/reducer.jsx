@@ -1,4 +1,4 @@
-import { GET_MESSAGES, GET_MESSAGES_FAILURE, GET_MESSAGES_SUCCESS, ADD_MESSAGE, ADD_MESSAGE_FAILURE, ADD_MESSAGE_SUCCESS } from "../actionTypes";
+import { GET_MESSAGES, GET_MESSAGES_FAILURE, GET_MESSAGES_SUCCESS, ADD_MESSAGE, ADD_MESSAGE_FAILURE, ADD_MESSAGE_SUCCESS, SET_CURRENT_CONVERSATION, SET_ARRIVAL_MESSAGE } from "../actionTypes";
 
 const initial_state = {
     getMessage: {
@@ -21,15 +21,20 @@ const initial_state = {
 
 const messagesReducer = (state = initial_state, { type, payload }) => {
     switch (type) {
-        case GET_MESSAGES:
+        case SET_CURRENT_CONVERSATION:
             console.log("amb amb amb: ", payload);
+            return {
+                ...state,
+                currentConversation: {
+                    data: payload
+                }
+            }
+
+        case GET_MESSAGES:
             return {
                 ...state,
                 getMessage: {
                     loading: true
-                },
-                conversationId: {
-                    data: payload
                 }
             }
 
@@ -77,6 +82,14 @@ const messagesReducer = (state = initial_state, { type, payload }) => {
                 ...state,
                 addMessage: {
                     loading: false
+                }
+            };
+
+        case SET_ARRIVAL_MESSAGE:
+            return {
+                ...state,
+                getMessage: {
+                    data: [...state.getMessage.data, payload]
                 }
             };
 
