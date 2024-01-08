@@ -22,7 +22,7 @@ const AuthForm = ({ type }) => {
 
     const onSubmit = (data) => {
         // e.target.reset();
-        console.log(data);
+        // console.log(data);
         type === 'login' ?
             dispatch(loginUser(data)) :
             dispatch(signupUser(data));

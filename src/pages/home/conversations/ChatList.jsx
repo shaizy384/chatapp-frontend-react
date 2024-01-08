@@ -65,7 +65,7 @@ const ChatList = () => {
     return (
         <div className='overflow-auto'>
             <p className="text-md leading-5 text-gray-500 ps-6 mt-5 mb-1.5">All messages</p>
-            <ul role="list" className="divide-y divide-gray-100 overflow-auto">
+            <ul role="list" className="divide-y divide-gray-100 dark:divide-gray-600 overflow-auto">
                 {chatList?.map((c) => {
                     console.log(c.members[1])
                     return <ChatListItem key={c.id} {...c} />

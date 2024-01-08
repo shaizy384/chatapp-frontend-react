@@ -46,7 +46,7 @@ const ChatBox = ({ openMsgs, setOpenMsgs }) => {
     //     // })
     //     socket.emit("addUser", userId)
     // }, [socket])
-    console.log(socket);
+    // console.log(socket);
     const handleSend = async () => {
         const receiverId = currentConversation.members?.find(member => member !== userId)
         socket.current.emit("sendMessage", { senderId: userId, receiverId, text: newMessage })
@@ -63,13 +63,13 @@ const ChatBox = ({ openMsgs, setOpenMsgs }) => {
 
     return (
         <>
-            {!openChatBox ? <div className='w-full sm:rounded-t-2xl shadow bg-sky-50 relative hidden sm:flex justify-center items-center'>
+            {!openChatBox ? <div className='w-full sm:rounded-t-2xl shadow bg-sky-50 dark:bg-gray-800 relative hidden sm:flex justify-center items-center'>
                 <div className='text-center'>
-                    <span className='text-lg mb-4'>Open a converation to start a chat</span><br />
-                    <span className='text-sm'>🔒Your personel messages are end to end encrypted</span>
+                    <span className='text-lg mb-4 dark:text-white'>Open a converation to start a chat</span><br />
+                    <span className='text-sm dark:text-white'>🔒Your personel messages are secured</span>
                 </div>
             </div> :
-                <div className={(!openChatBox && 'hidden') + ' flex flex-col w-full sm:rounded-t-2xl shadow bg-sky-50 relative'}>
+                <div className={(!openChatBox && 'hidden') + ' flex flex-col w-full sm:rounded-t-2xl shadow bg-sky-50 dark:bg-gray-800 relative'}>
                     <ChatBoxHeader />
                     <div className="overflow-y-auto">
                         {messages?.map(msg => (
@@ -78,7 +78,7 @@ const ChatBox = ({ openMsgs, setOpenMsgs }) => {
                             </div>
                         ))}
                     </div>
-                    <div className='mt-auto w-full bg-white p-3'>
+                    <div className='mt-auto w-full bg-white dark:bg-gray-800 p-3'>
                         <div className="flex items-center">
                             <i className="fa-regular fa-face-smile fa-xl text-gray-500 cursor-pointer"></i>
                             <input
@@ -88,9 +88,9 @@ const ChatBox = ({ openMsgs, setOpenMsgs }) => {
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
                                 placeholder="Try something..."
-                                className="block w-full rounded-md border-0 py-1.5 px-3.5 text-gray-900  ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 focus-visible:outline-none ms-3 me-1"
+                                className="block w-full rounded-md border-0 py-1.5 px-3.5 text-gray-900  ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 focus-visible:outline-none ms-3 me-1 dark:bg-gray-600 dark:ring-gray-500 dark:text-white"
                             />
-                            <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm py-3 px-4 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={handleSend}>
+                            <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm py-3 px-4 text-center inline-flex items-center mr-2 dark:bg-sky-500 dark:hover:bg-sky-700 dark:focus:ring-blue-800" onClick={handleSend}>
                                 <i className="fa-solid fa-paper-plane"></i>
                             </button>
                         </div>
