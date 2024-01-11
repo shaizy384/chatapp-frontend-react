@@ -2,10 +2,12 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { openChatBox } from '../../../redux/openChatBox/action'
 import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
-import ChatListItem from './ChatListItem'
+import UserListItem from './UserListItem'
 
-const ChatList = () => {
-    const chatList = useSelector(state => state.conversationReducer.getConversation.data)
+const UsersList = () => {
+    const usersList = useSelector(state => state.conversationReducer.getConversation.data)
+    const findFriend = useSelector(state => state.conversationReducer.findFriend.data)
+    console.log("findFriend: ",findFriend);
     const people = [
         {
             name: 'Leslie Alexander',
@@ -61,18 +63,18 @@ const ChatList = () => {
         },
     ]
 
-    console.log("chatList ", chatList);
+    console.log("usersList ", usersList);
     return (
         <div className='overflow-auto'>
             <p className="text-md leading-5 text-gray-500 ps-6 mt-5 mb-1.5">All messages</p>
             <ul role="list" className="divide-y divide-gray-100 dark:divide-gray-600 overflow-auto">
-                {chatList?.map((c) => {
+                {usersList?.map((c) => {
                     console.log(c.members[1])
-                    return <ChatListItem key={c.id} {...c} />
+                    return <UserListItem key={c.id} {...c} />
                 })}
             </ul>
         </div>
     )
 }
 
-export default ChatList
+export default UsersList

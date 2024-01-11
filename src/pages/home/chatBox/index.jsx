@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { callApi } from '../../../apis/APIs'
 import { addMessage, setArrivalMessage } from '../../../redux/messages/action'
 import { io } from 'socket.io-client'
-import { setOnlineFriends } from '../../../redux/onlineFriends/action'
+import { setOnlineFriends } from '../../../redux/conversations/action'
 
 const ENDPOINT = "http://localhost:2801"    // backend_host
 

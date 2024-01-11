@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import ChatList from './ChatList'
+import UsersList from './UsersList'
 import { useDispatch, useSelector } from 'react-redux'
 import { Logout } from '../../../redux/auth/action'
 import { useNavigate } from 'react-router-dom'
-import { chatListFilter, getConversations } from '../../../redux/conversations/action'
+import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
+import { chatListFilter, emptyFindFriend, findFriend, getConversations } from '../../../redux/conversations/action'
+import { openChatBox } from '../../../redux/openChatBox/action'
 
 const Conversations = ({ openMsgs, setOpenMsgs }) => {
     const dispatch = useDispatch()
@@ -13,7 +15,9 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
     const userData = useSelector(state => state.userDataReducer.data)
     const chatList = useSelector(state => state.conversationReducer.getConversation.data)
     const [showOpt, setShowOpt] = useState(false)
-    const openChatBox = useSelector(state => state.chatBoxReducer.open)
+    const showChatBox = useSelector(state => state.chatBoxReducer.open)
+    const searchedUser = useSelector(state => state.conversationReducer.findFriend.data)
+    console.log("searchedUser ", searchedUser === "" ? "No user found" : search);
 
     console.log("chatList ", chatList);
     useEffect(() => {
@@ -22,16 +26,14 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
         }
     }, [])
 
-
+    // Dark and light theme
     useEffect(() => {
         if (window.matchMedia('(prefers-color-scheme:dark)'.match)) {
-            // console.log("hello:", window.matchMedia('(prefers-color-scheme: dark)'.match))
             setTheme('dark')
         } else {
             setTheme('light')
         }
     }, [])
-
     useEffect(() => {
         if (theme === 'light') {
             document.documentElement.classList.remove('dark')
@@ -39,7 +41,6 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
             document.documentElement.classList.add('dark')
         }
     }, [theme])
-
     const handleTheme = () => {
         setTheme(theme === 'dark' ? 'light' : 'dark')
     }
@@ -52,12 +53,22 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
         dispatch(chatListFilter(e.target.value))
         // console.log(e.target.value);
     }
+    const handleSearchedUser = () => {
+        dispatch(openChatBox())
+        // dispatch(emptyFindFriend())
+        console.log("searchedUser: ", searchedUser._id);
+    }
+    const handleCross = () => {
+        setSearch("");
+        dispatch(emptyFindFriend())
+        console.log(search);
+    }
     const handleSearch = () => {
-        // dispatch(chatListFilter(search))
+        dispatch(findFriend(search))
         console.log(search);
     }
     return (
-        <div className={(openChatBox && 'hidden') + ' flex sm:flex sm:w-[18rem] w-full bg-white dark:bg-gray-800 sm:rounded-t-2xl shadow flex-col h-full'}>
+        <div className={(showChatBox && 'hidden') + ' relative flex sm:flex sm:w-[18rem] w-full bg-white dark:bg-gray-800 sm:rounded-t-2xl shadow flex-col h-full'}>
             <div className="flex justify-between items-center gap-x-6 py-6 px-5">
                 <div className="flex min-w-0 gap-x-4">
                     <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src='https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' alt="" />
@@ -74,7 +85,7 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
                         </svg>
                     </button>
                     {/* <!-- Dropdown menu --> */}
-                    <div id="dropdownDots" className={"absolute right-0 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700 dark:divide-gray-600 " + (!showOpt && "hidden")}>
+                    <div id="dropdownDots" className={"absolute right-0 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700 dark:divide-gray-600 " + (!showOpt && "hidden")}>
                         <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
                             <li>
                                 <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
@@ -90,19 +101,34 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
                             <span onClick={logout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white cursor-pointer">Sign out</span>
                         </div>
                     </div>
-
                 </div>
             </div>
 
             {/* Search Input */}
-            <div className="relative px-5">
-                <div className="absolute inset-y-0 start-0 flex items-center ps-[2.125rem] pointer-events-none">
-                    <i className="fa-solid fa-magnifying-glass text-gray-400 cursor-pointer"></i>
+            <div className="relative">
+                <div className="relative px-5">
+                    <div className={"absolute inset-y-0 start-0 flex items-center ps-[2.125rem] pointer-events-none " + (search.length !== 0 && " hidden")}>
+                        <i className="fa-solid fa-magnifying-glass text-gray-400"></i>
+                    </div>
+                    <div className={"absolute inset-y-0 start-0 flex items-center ps-[2.125rem] " + (search.length === 0 && " hidden")}>
+                        <i className="fa-solid fa-xmark text-gray-400 cursor-pointer" onClick={handleCross}></i>
+                    </div>
+                    <input type="text" id="search" value={search} onChange={e => { setSearch(e.target.value); console.log(search.length); }} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-t-lg focus:ring-2 focus:ring-inset focus:ring-indigo-600 block w-full px-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500 focus-visible:outline-none" placeholder="Search by email" />
+                    <div className={"absolute inset-y-0 right-0 items-center pe-[2.125rem] flex " + (search.length === 0 && "hidden")}>
+                        <i className="fa-solid fa-arrow-right text-gray-400 cursor-pointer" onClick={handleSearch}></i>
+                    </div>
                 </div>
-                <input type="text" id="search" onChange={e => { setSearch(e.target.value); console.log(search.length); }} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-inset focus:ring-indigo-600 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500 focus-visible:outline-none" placeholder="Search by email" />
-                <div class={"absolute inset-y-0 right-0 items-center pe-[2.125rem] flex " + (search.length === 0 && "hidden")}>
-                    <i class="fa-solid fa-arrow-right text-gray-400 cursor-pointer" onClick={handleSearch}></i>
-                </div>
+                {/* <!-- Search Dropdown --> */}
+                {searchedUser && <div id="dropdownDots" className={"absolute right-0 z-10 bg-white divide-y divide-gray-100 rounded-b-lg shadow-md dark:bg-gray-700 dark:divide-gray-600 mx-5 w-[-webkit-fill-available]"}>
+                    <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
+                        <li>
+                            <button className="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-bold" onClick={handleSearchedUser}>
+                                <img className="h-8 w-8 flex-none rounded-full bg-gray-50" src={defaultAvatar} alt="defaultAvatar" />
+                                <span>{searchedUser === "" ? "No user found" : searchedUser?.name}</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>}
             </div>
 
             <div className='bg-gray-100 dark:bg-gray-700 rounded-full py-2 px-2 mx-5 mt-3'>
@@ -128,7 +154,11 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
                 </ul>
             </div>
             {/* </div> */}
-            <ChatList />
+            <UsersList />
+            <button id="twitter" className="absolute bottom-4 right-4 bg-white transform hover:-translate-y-3 w-12 h-12 rounded-full duration-500 text-sky-400 hover:bg-sky-400 hover:text-white text-2xl">
+                {/* <i class="fab fa-twitter"></i> */}
+                <i class="fa-solid fa-user-plus fa-sm ps-1 pb-4"></i>
+            </button>
         </div>
     )
 }
