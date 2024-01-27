@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { signupUser } from '../../redux/register/action';
 
 const AuthForm = ({ type }) => {
+    const user = useSelector(state => state.authReducer)
+    // console.log("user: ",user);
     const dispatch = useDispatch()
     let loading;
     let state = useSelector(state => state);

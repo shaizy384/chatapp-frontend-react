@@ -7,11 +7,11 @@ export const signupUser = (data) => async (dispatch) => {
     const url = "user/register"
     const Data = await callApi(url, 'POST', data, true);
     console.log('Data: ', Data);
-    if (Data.status === 200) {
-        dispatch({ type: SIGNUP_SUCCESS })
+    if (Data?.status === 200) {
+        dispatch({ type: SIGNUP_SUCCESS, payload: Data?.data })
         window.location.href = '/verifyemail';
     } else {
         dispatch({ type: SIGNUP_FAILURE })
-        toast.error(Data.data.message)
+        toast.error(Data?.data.message)
     }
 }

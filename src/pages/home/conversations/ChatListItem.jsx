@@ -29,7 +29,7 @@ const ChatListItem = ({ _id, members }) => {
         const getUser = async () => {
             try {
                 const res = await callApi(`friends/${members[1]}`, 'GET', '', true);
-                setUser(res.data.data);
+                setUser(res.data?.data);
             } catch (err) {
                 console.log(err);
             }

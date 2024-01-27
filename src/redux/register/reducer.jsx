@@ -16,12 +16,11 @@ const signupReducer = (state = initial_state, { type, payload }) => {
             return { ...state, loading: true }
 
         case SIGNUP_SUCCESS:
-            // localStorage.setItem('authToken', payload.token);
+            localStorage.setItem('authToken', payload.data);
             return {
                 ...state,
                 loading: false,
                 message: null,
-                isAuthenticated: true,
                 error: null
             }
 

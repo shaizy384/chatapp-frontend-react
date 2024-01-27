@@ -6,10 +6,10 @@ export const getFriendDetails = (id) => async (dispatch) => {
     dispatch({ type: GET_FRIEND_DETAILS })
     const url = `friends/${id}`
     const Data = await callApi(url, 'GET', '', true);
-    if (Data.status === 200) {
-        dispatch({ type: GET_FRIEND_DETAILS_SUCCESS, payload: Data.data.data })
+    if (Data?.status === 200) {
+        dispatch({ type: GET_FRIEND_DETAILS_SUCCESS, payload: Data?.data.data })
     } else {
         dispatch({ type: GET_FRIEND_DETAILS_FAILURE })
-        toast.error(Data.data.message)
+        toast.error(Data?.data.message)
     }
 }
