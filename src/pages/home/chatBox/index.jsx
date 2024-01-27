@@ -7,7 +7,7 @@ import { addMessage, setArrivalMessage } from '../../../redux/messages/action'
 import { io } from 'socket.io-client'
 import { setOnlineFriends } from '../../../redux/conversations/action'
 
-const ENDPOINT = "http://localhost:2801"    // backend_host
+const ENDPOINT = "http://localhost:2800"    // backend_host
 
 const ChatBox = ({ openMsgs, setOpenMsgs }) => {
     const socket = useRef()

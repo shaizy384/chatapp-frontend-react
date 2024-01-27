@@ -8,17 +8,10 @@ const Home = () => {
     const dispatch = useDispatch()
     const [openMsgs, setOpenMsgs] = useState(true)
     const userData = useSelector(state => state.userDataReducer.data)
-    useEffect(() => {
-        if (!userData) {
-            dispatch(getUserData())
-            // console.log("amb:: ", userData);
-        }
-    }, [])
-
 
     return (
         <div className='h-screen'>
-            <div className='flex gap-5 bg-slate-100 dark:bg-gray-900 xl:h-screen h-[99vh] xl:w-screen sm:p-5 sm:pb-0 p-0 overflow-y-hidden overflow-x-auto'>
+            <div className='flex gap-5 bg-slate-100 dark:bg-gray-900 xl:h-screen h-[100vh] xl:w-screen sm:p-5 sm:pb-0 p-0 overflow-y-hidden overflow-x-auto'>
                 <Conversations openMsgs={openMsgs} setOpenMsgs={setOpenMsgs} />
                 <ChatBox openMsgs={openMsgs} setOpenMsgs={setOpenMsgs} />
             </div>

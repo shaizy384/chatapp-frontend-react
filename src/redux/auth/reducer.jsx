@@ -6,6 +6,7 @@ const initial_state = {
         localStorage.getItem('authToken') && localStorage.getItem('authToken') !== undefined
             ? true
             : false,
+    isVerified: false,
     message: null,
     loading: false,
 };
@@ -17,10 +18,12 @@ const authReducer = (state = initial_state, { type, payload }) => {
 
         case LOGIN_SUCCESS:
             localStorage.setItem("authToken", payload.auth);
+            console.log(payload);
             return {
                 ...state,
                 loading: false,
                 isAuthenticated: true,
+                isVerified: payload.isVerified,
             };
 
         case LOGIN_FAILURE:
