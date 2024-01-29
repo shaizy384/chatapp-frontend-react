@@ -12,7 +12,7 @@ const UserListItem = ({ _id, members }) => {
     const [showUser, setShowUser] = useState(false)
     const userListFilter = useSelector(state => state.conversationReducer.chatListFilter.data)
     // console.log("chatListFilter: ", chatListFilter);
-    const onlineFriends = useSelector(state => state.conversationReducer.setOnlineFriends.data)
+    const onlineFriends = useSelector(state => state.conversationReducer.setOnlineFriends?.data)
     const online = onlineFriends?.filter(user => user.userId === members[1]).length > 0
     // console.log("onlne: ", onlineFriends, online, _id);
     useEffect(() => {
@@ -39,7 +39,7 @@ const UserListItem = ({ _id, members }) => {
     const handleChat = () => {
         dispatch(openChatBox())
         dispatch(getMessages(_id))
-        dispatch(setCurrentConversation({ conversationId: _id, members }))
+        dispatch(setCurrentConversation({ conversationId: _id, members, user }))
     }
     return (
         <>
@@ -48,7 +48,7 @@ const UserListItem = ({ _id, members }) => {
                     <div className="flex min-w-0 gap-x-4">
                         <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={defaultAvatar} alt="defaultAvatar" />
                         <div className="min-w-0 flex-auto">
-                            <p className="text-lg font-semibold leading-6 text-gray-900 dark:text-white truncate">{user}</p>
+                            <p className="text-lg font-semibold leading-6 text-gray-900 dark:text-white truncate">{user?.name}</p>
                             <p className="mt-1 truncate text-md leading-5 text-gray-500 dark:text-gray-400">My message</p>
                         </div>
                     </div>

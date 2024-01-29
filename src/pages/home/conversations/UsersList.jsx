@@ -7,6 +7,7 @@ import UserListItem from './UserListItem'
 const UsersList = () => {
     const usersList = useSelector(state => state.conversationReducer.getConversation.data)
     const findFriend = useSelector(state => state.conversationReducer.findFriend.data)
+    console.log("usersList amb er: ",usersList);
     console.log("findFriend: ",findFriend);
     const people = [
         {
@@ -69,7 +70,7 @@ const UsersList = () => {
             <p className="text-md leading-5 text-gray-500 ps-6 mt-5 mb-1.5">All messages</p>
             <ul role="list" className="divide-y divide-gray-100 dark:divide-gray-600 overflow-auto">
                 {usersList?.map((c) => {
-                    console.log(c.members[1])
+                    console.log("members[1]: ",c.members[1])
                     return <UserListItem key={c.id} {...c} />
                 })}
             </ul>

@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { callApi } from "../../apis/APIs";
-import { CHAT_LIST_FILTER, EMPTY_FIND_FRIEND, FIND_FRIEND, FIND_FRIEND_FAILURE, FIND_FRIEND_SUCCESS, GET_CONVERSATIONS, GET_CONVERSATIONS_FAILURE, GET_CONVERSATIONS_SUCCESS, SET_ONLINE_FRIENDS } from "../actionTypes"
+import { CHAT_LIST_FILTER, CREATE_CONVERSATION, CREATE_CONVERSATION_FAILURE, CREATE_CONVERSATION_SUCCESS, EMPTY_FIND_FRIEND, FIND_FRIEND, FIND_FRIEND_FAILURE, FIND_FRIEND_SUCCESS, GET_CONVERSATIONS, GET_CONVERSATIONS_FAILURE, GET_CONVERSATIONS_SUCCESS, SET_ONLINE_FRIENDS } from "../actionTypes"
+import { getMessages, setCurrentConversation } from "../messages/action";
 
 export const getConversations = () => async (dispatch) => {
     dispatch({ type: GET_CONVERSATIONS })
@@ -10,6 +11,22 @@ export const getConversations = () => async (dispatch) => {
         dispatch({ type: GET_CONVERSATIONS_SUCCESS, payload: Data?.data.data })
     } else {
         dispatch({ type: GET_CONVERSATIONS_FAILURE })
+        toast.error(Data?.data.message)
+    }
+}
+
+export const createConversations = (data) => async (dispatch) => {
+    dispatch({ type: CREATE_CONVERSATION })
+    const url = "chats/"
+    console.log("dispatching: ", data);
+    const Data = await callApi(url, 'POST', data, true);
+    if (Data?.status === 200) {
+        dispatch({ type: CREATE_CONVERSATION_SUCCESS, payload: Data?.data.data })
+        // dispatch({ type: GET_CONVERSATIONS })
+        dispatch(getMessages(Data?.data.data.members[1]))
+        dispatch(setCurrentConversation({ conversationId: Data?.data.data.members[1], members: Data?.data.data.members }))
+    } else {
+        dispatch({ type: CREATE_CONVERSATION_FAILURE })
         toast.error(Data?.data.message)
     }
 }
@@ -32,7 +49,7 @@ export const findFriend = (data) => async (dispatch) => {
     dispatch({ type: FIND_FRIEND })
     const url = `friends/findUser/${data}`
     const Data = await callApi(url, 'GET', '', true);
-    if (Data.status === 200) {
+    if (Data?.status === 200) {
         dispatch({ type: FIND_FRIEND_SUCCESS, payload: Data.data.data })
     } else {
         dispatch({ type: FIND_FRIEND_FAILURE })

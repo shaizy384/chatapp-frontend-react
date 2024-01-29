@@ -1,7 +1,12 @@
-import { CHAT_LIST_FILTER, EMPTY_FIND_FRIEND, FIND_FRIEND, FIND_FRIEND_FAILURE, FIND_FRIEND_SUCCESS, GET_CONVERSATIONS, GET_CONVERSATIONS_FAILURE, GET_CONVERSATIONS_SUCCESS, SET_ONLINE_FRIENDS } from "../actionTypes";
+import { CHAT_LIST_FILTER, CREATE_CONVERSATION, CREATE_CONVERSATION_FAILURE, CREATE_CONVERSATION_SUCCESS, EMPTY_FIND_FRIEND, FIND_FRIEND, FIND_FRIEND_FAILURE, FIND_FRIEND_SUCCESS, GET_CONVERSATIONS, GET_CONVERSATIONS_FAILURE, GET_CONVERSATIONS_SUCCESS, SET_ONLINE_FRIENDS } from "../actionTypes";
 
 const initial_state = {
     getConversation: {
+        message: null,
+        loading: false,
+        data: null,
+    },
+    createConversation: {
         message: null,
         loading: false,
         data: null,
@@ -34,6 +39,29 @@ const conversationReducer = (state = initial_state, { type, payload }) => {
             return {
                 ...state,
                 getConversation: {
+                    loading: false
+                }
+            };
+
+        case CREATE_CONVERSATION:
+            return { ...state, createConversation: { loading: true } }
+        case CREATE_CONVERSATION_SUCCESS:
+            console.log("after creating conv: ", state.getConversation.data, payload)
+            return {
+                ...state,
+                createConversation: {
+                    loading: false,
+                    data: payload
+                },
+                getConversation: {
+                    loading: false,
+                    data: [payload, ...state.getConversation.data]
+                }
+            }
+        case CREATE_CONVERSATION_FAILURE:
+            return {
+                ...state,
+                createConversation: {
                     loading: false
                 }
             };

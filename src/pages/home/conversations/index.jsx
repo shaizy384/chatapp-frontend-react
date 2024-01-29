@@ -5,7 +5,7 @@ import { Logout } from '../../../redux/auth/action'
 import { useNavigate } from 'react-router-dom'
 import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
 import { chatListFilter, emptyFindFriend, findFriend, getConversations } from '../../../redux/conversations/action'
-import { openChatBox } from '../../../redux/openChatBox/action'
+import { openChatBox, openSearchFriend } from '../../../redux/openChatBox/action'
 
 const Conversations = ({ openMsgs, setOpenMsgs }) => {
     const dispatch = useDispatch()
@@ -15,7 +15,7 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
     const userData = useSelector(state => state.userDataReducer.data)
     const chatList = useSelector(state => state.conversationReducer.getConversation.data)
     const [showOpt, setShowOpt] = useState(false)
-    const showChatBox = useSelector(state => state.chatBoxReducer.open)
+    const showChatBox = useSelector(state => state.chatBoxReducer.chatBox.open)
     const searchedUser = useSelector(state => state.conversationReducer.findFriend.data)
     console.log("searchedUser ", searchedUser === "" ? "No user found" : search);
 
@@ -85,7 +85,7 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
                         </svg>
                     </button>
                     {/* <!-- Dropdown menu --> */}
-                    <div id="dropdownDots" className={"absolute right-0 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700 dark:divide-gray-600 " + (!showOpt && "hidden")}>
+                    <div id="dropdownDots" className={"absolute right-0 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700  dark:divide-gray-600 " + (!showOpt && "hidden")}>
                         <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
                             <li>
                                 <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
@@ -105,7 +105,7 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
             </div>
 
             {/* Search Input */}
-            <div className="relative">
+            <div className="relative pt-2">
                 <div className="relative px-5">
                     <div className={"absolute inset-y-0 start-0 flex items-center ps-[2.125rem] pointer-events-none " + (search.length !== 0 && " hidden")}>
                         <i className="fa-solid fa-magnifying-glass text-gray-400"></i>
@@ -113,7 +113,7 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
                     <div className={"absolute inset-y-0 start-0 flex items-center ps-[2.125rem] " + (search.length === 0 && " hidden")}>
                         <i className="fa-solid fa-xmark text-gray-400 cursor-pointer" onClick={handleCross}></i>
                     </div>
-                    <input type="text" id="search" value={search} onChange={e => { setSearch(e.target.value); console.log(search.length); }} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-t-lg focus:ring-2 focus:ring-inset focus:ring-indigo-600 block w-full px-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500 focus-visible:outline-none" placeholder="Search by email" />
+                    <input type="text" id="search" value={search} onChange={e => { setSearch(e.target.value); console.log(search.length); }} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-t-lg focus:ring-2 focus:ring-inset focus:ring-sky-400 block w-full px-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500 focus-visible:outline-none" placeholder="Search by email" />
                     <div className={"absolute inset-y-0 right-0 items-center pe-[2.125rem] flex " + (search.length === 0 && "hidden")}>
                         <i className="fa-solid fa-arrow-right text-gray-400 cursor-pointer" onClick={handleSearch}></i>
                     </div>
@@ -155,7 +155,7 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
             </div>
             {/* </div> */}
             <UsersList />
-            <button id="twitter" className="absolute bottom-4 right-4 bg-white transform hover:-translate-y-3 w-12 h-12 rounded-full duration-500 text-sky-400 hover:bg-sky-400 hover:text-white text-2xl">
+            <button id="twitter" className="absolute bottom-4 right-4 bg-white transform hover:-translate-y-3 w-12 h-12 shadow-md rounded-full duration-500 text-sky-400 hover:bg-sky-400 hover:text-white text-2xl" onClick={() => dispatch(openSearchFriend())}>
                 {/* <i class="fab fa-twitter"></i> */}
                 <i class="fa-solid fa-user-plus fa-sm ps-1 pb-4"></i>
             </button>

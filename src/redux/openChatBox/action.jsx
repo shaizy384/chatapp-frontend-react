@@ -1,4 +1,4 @@
-import { CLOSE_CHATBOX, OPEN_CHATBOX } from "../actionTypes"
+import { CLOSE_CHATBOX, CLOSE_SEARCH_FRIEND, OPEN_CHATBOX, OPEN_SEARCH_FRIEND } from "../actionTypes"
 
 export const openChatBox = () => {
     return ({
@@ -9,5 +9,17 @@ export const openChatBox = () => {
 export const closeChatBox = () => {
     return ({
         type: CLOSE_CHATBOX,
+    })
+}
+
+export const openSearchFriend = () => {
+    return ({
+        type: OPEN_SEARCH_FRIEND,
+    })
+}
+
+export const closeSearchFriend = () => {
+    return ({
+        type: CLOSE_SEARCH_FRIEND,
     })
 }

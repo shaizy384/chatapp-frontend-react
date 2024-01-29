@@ -42,7 +42,7 @@ const AuthForm = ({ type }) => {
                             src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                             alt="Your Company"
                         />
-                        <h2 className='text-3xl font-bold text-indigo-600'>GalBaat</h2>
+                        <h2 className='text-3xl font-bold text-sky-400'>GalBaat</h2>
                     </div>
                     <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                         {type === 'login' ? "Sign in to" : "Register"} your account
@@ -59,7 +59,7 @@ const AuthForm = ({ type }) => {
                                     name="name"
                                     type="name"
                                     autoComplete="name"
-                                    className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 focus:outline-none"
+                                    className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-400 sm:text-sm sm:leading-6 focus:outline-none"
                                     {...register('name', {
                                         required: "Name is required"
                                     })}
@@ -75,7 +75,7 @@ const AuthForm = ({ type }) => {
                                     name="email"
                                     type="email"
                                     autoComplete="email"
-                                    className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 focus:outline-none"
+                                    className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-400 sm:text-sm sm:leading-6 focus:outline-none"
                                     {...register('email', {
                                         required: "Email is required",
                                         pattern: {
@@ -91,7 +91,7 @@ const AuthForm = ({ type }) => {
                             <div className="flex items-center justify-between">
                                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">Password</label>
                                 {type === 'login' && <div className="text-sm">
-                                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                                    <a href="#" className="font-semibold text-sky-400 hover:text-sky-500">
                                         Forgot password?
                                     </a>
                                 </div>}
@@ -102,7 +102,7 @@ const AuthForm = ({ type }) => {
                                     name="password"
                                     type="password"
                                     autoComplete="current-password"
-                                    className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6  focus:outline-none focus:outline-none"
+                                    className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-400 sm:text-sm sm:leading-6  focus:outline-none focus:outline-none"
                                     {...register('password', {
                                         required: "Password is required",
                                         minLength: {
@@ -118,7 +118,7 @@ const AuthForm = ({ type }) => {
                         <div>
                             <button
                                 type="submit"
-                                className={"flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 " + (loading && "cursor-not-allowed")}
+                                className={"flex w-full justify-center rounded-md bg-sky-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 " + (loading && "cursor-not-allowed")}
                             >
                                 {/* {type === 'login' ? "Sign in" : "Register"} */}
                                 {loading ?
@@ -135,12 +135,12 @@ const AuthForm = ({ type }) => {
                     <p className="mt-10 text-center text-sm text-gray-500">
                         {type === 'login' ? <>
                             Not a member?{' '}
-                            <Link to="/register" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                            <Link to="/register" className="font-semibold leading-6 text-sky-400 hover:text-sky-500">
                                 Register
                             </Link>
                         </> : <>
                             Already have an account?{' '}
-                            <Link to="/login" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                            <Link to="/login" className="font-semibold leading-6 text-sky-400 hover:text-sky-500">
                                 Sign in
                             </Link>
                         </>

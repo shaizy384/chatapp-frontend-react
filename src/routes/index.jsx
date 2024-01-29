@@ -35,6 +35,7 @@ const Routers = () => {
         <Routes>
           <Route exact path='/' element={<Layout />}>
             <Route exact path='' element={<Home />} />
+            <Route exact path='search' element={<Home />} />
             <Route exact path='verifyemail' element={<VerifyEmail />} />
           </Route>
           <Route exact path='/' element={<PublicRoute />}>
