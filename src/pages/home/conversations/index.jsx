@@ -5,7 +5,8 @@ import { Logout } from '../../../redux/auth/action'
 import { useNavigate } from 'react-router-dom'
 import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
 import { chatListFilter, emptyFindFriend, emptySearchFriend, findFriend, getConversations, searchFriend } from '../../../redux/conversations/action'
-import { openChatBox, openSearchFriend } from '../../../redux/openChatBox/action'
+import { openChatBox, openProfile, openSearchFriend } from '../../../redux/openChatBox/action'
+import { setCurrentConversation } from '../../../redux/messages/action'
 
 const Conversations = () => {
     const dropdownRef = useRef(null);
@@ -41,6 +42,12 @@ const Conversations = () => {
     }, []);
     const setShowDrop = () => {
         dropdownRef.current.style.display = "block"
+    }
+    const showProfile = () => {
+        // dropdownRef.current.style.display = "none"
+        dispatch(openProfile())
+        console.log("show prfile");
+        dispatch(setCurrentConversation({ user: userData }))
     }
 
     // Dark and light theme
@@ -108,7 +115,7 @@ const Conversations = () => {
                     <div id="dropdownDots" ref={dropdownRef} className={"absolute right-0 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700  dark:divide-gray-600 "}>
                         <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
                             <li>
-                                <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">View Profile</a>
+                                <button onClick={showProfile} className="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">View Profile</button>
                             </li>
                             <li>
                                 <button className="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onClick={handleTheme}>Dark Mode</button>
@@ -159,8 +166,8 @@ const Conversations = () => {
             {/* </div> */}
             <UsersList />
             <button id="twitter" className="absolute bottom-4 right-4 bg-white transform hover:-translate-y-3 w-12 h-12 shadow-md rounded-full duration-500 text-sky-400 hover:bg-sky-400 hover:text-white text-2xl" onClick={() => dispatch(openSearchFriend())}>
-                {/* <i class="fab fa-twitter"></i> */}
-                <i class="fa-solid fa-user-plus fa-sm ps-1 pb-4"></i>
+                {/* <i className="fab fa-twitter"></i> */}
+                <i className="fa-solid fa-user-plus fa-sm ps-1 pb-4"></i>
             </button>
         </div>
     )

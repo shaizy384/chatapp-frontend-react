@@ -49,7 +49,7 @@ const FindUser = () => {
                                     <button className="flex items-center gap-2 px-5 py-2 w-ful hover:bg-gray-100 w-[-webkit-fill-available] dark:hover:bg-gray-600 dark:hover:text-white text-lg">
                                         <img className="h-8 w-8 flex-none rounded-full bg-gray-50" src={defaultAvatar} alt="defaultAvatar" />
                                         <span>{searchedUser?.name}</span>
-                                        <i class="fa-solid fa-angle-right ml-auto text-gray-400"></i>
+                                        <i className="fa-solid fa-angle-right ml-auto text-gray-400"></i>
                                     </button>
                                 </li>
                             </ul>
@@ -77,7 +77,7 @@ const FindUser = () => {
             </div>
             {searchedUser === "" && <div className="flex justify-center items-center grow">
                 <div className="flex flex-col items-center">
-                    <i class="fa-solid fa-user-group fa-xl mb-3 text-gray-500"></i>
+                    <i className="fa-solid fa-user-group fa-xl mb-3 text-gray-500"></i>
                     <h1 className='font-medium text-lg mt-2 pb-1 text-gray- dark:text-white'>No people found</h1>
                     <p className='text-gray-500 dark:text-gray-400'>We couldn’t find anything with that email. Please try again.</p>
                 </div>

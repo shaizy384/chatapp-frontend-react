@@ -1,13 +1,35 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { closeChatBox } from '../../../redux/openChatBox/action'
+import { closeChatBox, openProfile } from '../../../redux/openChatBox/action'
 
 const ChatBoxHeader = () => {
     const dispatch = useDispatch()
+    const dropdownRef = useRef(null);
     let currentConversation = useSelector(state => state.messagesReducer.currentConversation?.data?.user)
     const searchedUser = useSelector(state => state.conversationReducer.findFriend.data)
-
     console.log("currentConversation: ", currentConversation);
+
+    // for closing dropdown
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (!dropdownRef.current?.contains(e.target)) {
+                dropdownRef.current.style.display = "none"
+                console.log("drops drops: ", e);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+    const setShowDrop = () => {
+        dropdownRef.current.style.display = "block"
+    }
+    const showProfile = () => {
+        dropdownRef.current.style.display = "none"
+        dispatch(openProfile())
+        console.log("show prfile");
+    }
     return (
         <>
             <div className="flex justify-between gap-x-6 py-6 sm:px-5 px-4 border-b dark:border-gray-600 rounded-t-2xl bg-white dark:bg-gray-800">
@@ -23,8 +45,23 @@ const ChatBoxHeader = () => {
                 </div>
                 <div className="flex items-center gap-3">
                     {/* <i className="fa-solid fa-video fa-lg text-gray-400 cursor-pointer"></i> */}
-                    <i className="fa-solid fa-phone fa-lg text-gray-400 cursor-pointer"></i>
-                    <i className="fa-solid fa-ellipsis-vertical fa-lg text-gray-400 cursor-pointer"></i>
+                    {/* <i className="fa-solid fa-phone fa-lg text-gray-400 cursor-pointer"></i> */}
+                    <div className="dropdown">
+                        <button type='button' className='p-1' onClick={setShowDrop}>
+                            <i className="fa-solid fa-ellipsis-vertical fa-lg text-gray-400 cursor-pointer"></i>
+                        </button>
+                        {/* <!-- Dropdown menu --> */}
+                        <div id="dropdownDots" ref={dropdownRef} className={"absolute right-3 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow-md w- dark:bg-gray-700 dark:divide-gray-600 text-gray-700 dark:text-gray-200"}>
+                            {/* <ul className="text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
+                                <li> */}
+                                    <button onClick={showProfile} className=" w-full block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg dark:hover:text-white">View Profile</button>
+                                {/* </li>
+                            </ul> */}
+                            {/* <div className="py-2">
+                                <span className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white cursor-pointer">Sign out</span>
+                            </div> */}
+                        </div>
+                    </div>
                 </div>
             </div>
         </>
