@@ -14,6 +14,7 @@ const Conversations = () => {
     const navigate = useNavigate()
     const [search, setSearch] = useState("")
     const [theme, setTheme] = useState(null)
+    // const local = localStorage.getItem("color-scheme")
     const userData = useSelector(state => state.userDataReducer.data)
     const chatList = useSelector(state => state.conversationReducer.getConversation.data)
     // const [showOpt, setShowOpt] = useState(false)
@@ -49,24 +50,33 @@ const Conversations = () => {
         console.log("show prfile");
         dispatch(setCurrentConversation({ user: userData }))
     }
-
+    console.log("localStorage.getItem(): ", localStorage.getItem("color-scheme"));
     // Dark and light theme
     useEffect(() => {
+        // const local = localStorage.getItem("color-scheme")
+        // if (local) {
+        //     local === "dark" ? setTheme('dark') : setTheme('light')
+        // } else {
         if (window.matchMedia('(prefers-color-scheme:dark)'.match)) {
             setTheme('dark')
         } else {
             setTheme('light')
         }
+        // }
     }, [])
     useEffect(() => {
         if (theme === 'light') {
+            // localStorage.setItem("color-scheme", 'light')
             document.documentElement.classList.remove('dark')
         } else if (theme === 'dark') {
+            // localStorage.setItem("color-scheme", 'dark')
             document.documentElement.classList.add('dark')
         }
     }, [theme])
     const handleTheme = () => {
+        // const local = localStorage.getItem("color-scheme")
         setTheme(theme === 'dark' ? 'light' : 'dark')
+        // local === "dark" ? setTheme('dark') : setTheme('light')
     }
 
     const logout = () => {
@@ -131,7 +141,7 @@ const Conversations = () => {
             {/* Search Input */}
             <div className="relative pt-2">
                 <div className="relative px-5">
-                    <div className={"absolute inset-y-0 start-0 flex items-center ps-[2.125rem] pointer-events-none " + (search.length !== 0 && " hidde")}>
+                    <div className={"absolute inset-y-0 start-0 flex items-center ps-[2.125rem] pointer-events-none "}>
                         <i className="fa-solid fa-magnifying-glass text-gray-400"></i>
                     </div>
                     <input type="text" id="search" value={search} onChange={handleSearch} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-inset focus:ring-sky-400 block w-full px-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500 focus-visible:outline-none" placeholder="Search by email" />
