@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { openChatBox } from '../../../redux/openChatBox/action'
 import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
 import UserListItem from './UserListItem'
 
 const UsersList = () => {
+    const listParent = useRef()
+    // const [listPar, setListPar] = useState(listParent.current)
     const usersList = useSelector(state => state.conversationReducer.getConversation.data)
     const findFriend = useSelector(state => state.conversationReducer.findFriend.data)
-    console.log("usersList amb er: ",usersList);
-    console.log("findFriend: ",findFriend);
+    console.log("usersList amb er: ", usersList);
+    console.log("findFriend: ", findFriend);
     const people = [
         {
             name: 'Leslie Alexander',
@@ -68,12 +70,20 @@ const UsersList = () => {
     return (
         <div className='overflow-auto'>
             <p className="text-md leading-5 text-gray-500 ps-6 mt-5 mb-1.5">All messages</p>
-            <ul role="list" className="divide-y divide-gray-100 dark:divide-gray-600 overflow-auto">
-                {usersList?.map((c) => {
-                    console.log("members[1]: ",c.members[1])
-                    return <UserListItem key={c.id} {...c} />
-                })}
-            </ul>
+            {usersList?.length > 0 ?
+                <ul role="list" className="divide-y divide-gray-100 dark:divide-gray-600 overflow-auto" ref={listParent}>
+                    {usersList?.map((c) => {
+                        console.log("members[1]: ", c.members[1])
+                        // console.log("search list: ", usersList, listParent.current?.textContent.trim().length)
+                        return <UserListItem key={c.id} {...c} />
+                    })}
+                </ul> :
+                <span>No Friends Added!</span>
+            }
+            {/* {(listParent.current?.textContent.trim().length === 0) &&
+                <span>No User Found!</span>
+            } */}
+            {/* {console.log("search list amb: ", listPar,listPar?.getElementsByTagName("li"), listParent?.current?.textContent.trim().length)} */}
         </div>
     )
 }

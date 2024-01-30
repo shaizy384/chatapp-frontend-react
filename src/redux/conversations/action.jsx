@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { callApi } from "../../apis/APIs";
-import { CHAT_LIST_FILTER, CREATE_CONVERSATION, CREATE_CONVERSATION_FAILURE, CREATE_CONVERSATION_SUCCESS, EMPTY_FIND_FRIEND, FIND_FRIEND, FIND_FRIEND_FAILURE, FIND_FRIEND_SUCCESS, GET_CONVERSATIONS, GET_CONVERSATIONS_FAILURE, GET_CONVERSATIONS_SUCCESS, SET_ONLINE_FRIENDS } from "../actionTypes"
+import { CHAT_LIST_FILTER, CREATE_CONVERSATION, CREATE_CONVERSATION_FAILURE, CREATE_CONVERSATION_SUCCESS, EMPTY_FIND_FRIEND, EMPTY_SEARCH_FRIEND, FIND_FRIEND, FIND_FRIEND_FAILURE, FIND_FRIEND_SUCCESS, GET_CONVERSATIONS, GET_CONVERSATIONS_FAILURE, GET_CONVERSATIONS_SUCCESS, SEARCH_FRIEND, SET_ONLINE_FRIENDS } from "../actionTypes"
 import { getMessages, setCurrentConversation } from "../messages/action";
 
 export const getConversations = () => async (dispatch) => {
@@ -60,5 +60,18 @@ export const findFriend = (data) => async (dispatch) => {
 export const emptyFindFriend = () => {
     return ({
         type: EMPTY_FIND_FRIEND
+    })
+}
+
+export const searchFriend = (data) => {
+    return ({
+        type: SEARCH_FRIEND,
+        payload: data
+    })
+}
+
+export const emptySearchFriend = () => {
+    return ({
+        type: EMPTY_SEARCH_FRIEND
     })
 }

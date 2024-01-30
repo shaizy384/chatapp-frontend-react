@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Logout } from '../../../redux/auth/action'
 import { useNavigate } from 'react-router-dom'
 import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
-import { chatListFilter, emptyFindFriend, findFriend, getConversations } from '../../../redux/conversations/action'
+import { chatListFilter, emptyFindFriend, emptySearchFriend, findFriend, getConversations, searchFriend } from '../../../redux/conversations/action'
 import { openChatBox, openSearchFriend } from '../../../redux/openChatBox/action'
 
 const Conversations = ({ openMsgs, setOpenMsgs }) => {
@@ -60,12 +60,20 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
     }
     const handleCross = () => {
         setSearch("");
-        dispatch(emptyFindFriend())
+        dispatch(emptySearchFriend())
         console.log(search);
     }
-    const handleSearch = () => {
-        dispatch(findFriend(search))
+    // const handleSearch = () => {
+    //     dispatch(findFriend(search))
+    //     console.log(search);
+    // }
+    const handleSearch = (e) => {
+        setSearch(e.target.value);
+        console.log(search.length);
+        // dispatch(findFriend(search))
         console.log(search);
+
+        dispatch(searchFriend(e.target.value))
     }
     return (
         <div className={(showChatBox && 'hidden') + ' relative flex sm:flex sm:w-[18rem] w-full bg-white dark:bg-gray-800 sm:rounded-t-2xl shadow flex-col h-full'}>
@@ -107,19 +115,19 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
             {/* Search Input */}
             <div className="relative pt-2">
                 <div className="relative px-5">
-                    <div className={"absolute inset-y-0 start-0 flex items-center ps-[2.125rem] pointer-events-none " + (search.length !== 0 && " hidden")}>
+                    <div className={"absolute inset-y-0 start-0 flex items-center ps-[2.125rem] pointer-events-none " + (search.length !== 0 && " hidde")}>
                         <i className="fa-solid fa-magnifying-glass text-gray-400"></i>
                     </div>
-                    <div className={"absolute inset-y-0 start-0 flex items-center ps-[2.125rem] " + (search.length === 0 && " hidden")}>
+                    {/* <div className={"absolute inset-y-0 start-0 flex items-center ps-[2.125rem] " + (search.length === 0 && " hidden")}>
                         <i className="fa-solid fa-xmark text-gray-400 cursor-pointer" onClick={handleCross}></i>
-                    </div>
-                    <input type="text" id="search" value={search} onChange={e => { setSearch(e.target.value); console.log(search.length); }} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-t-lg focus:ring-2 focus:ring-inset focus:ring-sky-400 block w-full px-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500 focus-visible:outline-none" placeholder="Search by email" />
+                    </div> */}
+                    <input type="text" id="search" value={search} onChange={handleSearch} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-inset focus:ring-sky-400 block w-full px-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500 focus-visible:outline-none" placeholder="Search by email" />
                     <div className={"absolute inset-y-0 right-0 items-center pe-[2.125rem] flex " + (search.length === 0 && "hidden")}>
-                        <i className="fa-solid fa-arrow-right text-gray-400 cursor-pointer" onClick={handleSearch}></i>
+                        <i className="fa-solid fa-xmark text-gray-400 cursor-pointer" onClick={handleCross}></i>
                     </div>
                 </div>
                 {/* <!-- Search Dropdown --> */}
-                {searchedUser && <div id="dropdownDots" className={"absolute right-0 z-10 bg-white divide-y divide-gray-100 rounded-b-lg shadow-md dark:bg-gray-700 dark:divide-gray-600 mx-5 w-[-webkit-fill-available]"}>
+                {/* {searchedUser && <div id="dropdownDots" className={"absolute right-0 z-10 bg-white divide-y divide-gray-100 rounded-b-lg shadow-md dark:bg-gray-700 dark:divide-gray-600 mx-5 w-[-webkit-fill-available]"}>
                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
                         <li>
                             <button className="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-bold" onClick={handleSearchedUser}>
@@ -128,7 +136,7 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
                             </button>
                         </li>
                     </ul>
-                </div>}
+                </div>} */}
             </div>
 
             <div className='bg-gray-100 dark:bg-gray-700 rounded-full py-2 px-2 mx-5 mt-3'>

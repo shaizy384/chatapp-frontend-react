@@ -10,9 +10,11 @@ const UserListItem = ({ _id, members }) => {
     const dispatch = useDispatch()
     const [user, setUser] = useState()
     const [showUser, setShowUser] = useState(false)
-    const userListFilter = useSelector(state => state.conversationReducer.chatListFilter.data)
+    const userListFilter = useSelector(state => state.conversationReducer.chatListFilter?.data)
     // console.log("chatListFilter: ", chatListFilter);
     const onlineFriends = useSelector(state => state.conversationReducer.setOnlineFriends?.data)
+    const searchFriend = useSelector(state => state.conversationReducer.searchFriend?.data)
+    console.log("searchFriend: ", searchFriend, user?.name.toLowerCase(), user?.name.toLowerCase().includes(searchFriend));
     const online = onlineFriends?.filter(user => user.userId === members[1]).length > 0
     // console.log("onlne: ", onlineFriends, online, _id);
     useEffect(() => {
@@ -43,7 +45,9 @@ const UserListItem = ({ _id, members }) => {
     }
     return (
         <>
-            {showUser &&
+            {/* <> */}
+            {((showUser) &&
+                user?.name.toLowerCase().includes(searchFriend)) &&
                 <li className="flex justify-between gap-x-6 py-5 px-5 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600" onClick={handleChat}>
                     <div className="flex min-w-0 gap-x-4">
                         <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={defaultAvatar} alt="defaultAvatar" />
