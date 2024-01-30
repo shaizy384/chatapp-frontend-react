@@ -12,7 +12,7 @@ import waving from '../../../assets/images/waving.gif'
 
 const ENDPOINT = "http://localhost:2800"    // backend_host
 
-const ChatBox = ({ openMsgs, setOpenMsgs }) => {
+const ChatBox = () => {
     const socket = useRef()
     const scrollRef = useRef()
     const location = useLocation()

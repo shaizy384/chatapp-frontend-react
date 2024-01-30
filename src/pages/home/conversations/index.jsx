@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import UsersList from './UsersList'
 import { useDispatch, useSelector } from 'react-redux'
 import { Logout } from '../../../redux/auth/action'
@@ -7,14 +7,15 @@ import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
 import { chatListFilter, emptyFindFriend, emptySearchFriend, findFriend, getConversations, searchFriend } from '../../../redux/conversations/action'
 import { openChatBox, openSearchFriend } from '../../../redux/openChatBox/action'
 
-const Conversations = ({ openMsgs, setOpenMsgs }) => {
+const Conversations = () => {
+    const dropdownRef = useRef(null);
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [search, setSearch] = useState("")
     const [theme, setTheme] = useState(null)
     const userData = useSelector(state => state.userDataReducer.data)
     const chatList = useSelector(state => state.conversationReducer.getConversation.data)
-    const [showOpt, setShowOpt] = useState(false)
+    // const [showOpt, setShowOpt] = useState(false)
     const showChatBox = useSelector(state => state.chatBoxReducer.chatBox.open)
     const searchedUser = useSelector(state => state.conversationReducer.findFriend.data)
     console.log("searchedUser ", searchedUser === "" ? "No user found" : search);
@@ -25,6 +26,22 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
             dispatch(getConversations())
         }
     }, [])
+
+    // for closing dropdown
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                dropdownRef.current.style.display = "none"
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+    const setShowDrop = () => {
+        dropdownRef.current.style.display = "block"
+    }
 
     // Dark and light theme
     useEffect(() => {
@@ -63,16 +80,11 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
         dispatch(emptySearchFriend())
         console.log(search);
     }
-    // const handleSearch = () => {
-    //     dispatch(findFriend(search))
-    //     console.log(search);
-    // }
     const handleSearch = (e) => {
         setSearch(e.target.value);
         console.log(search.length);
         // dispatch(findFriend(search))
         console.log(search);
-
         dispatch(searchFriend(e.target.value))
     }
     return (
@@ -87,19 +99,16 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
                 </div>
 
                 <div className="dropdown-options relative">
-                    <button id="dropdownMenuIconButton" data-dropdown-offset-distance="5" data-dropdown-offset-skidding="-70" data-dropdown-toggle="dropdownDots" className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100  ring-1 ring-inset ring-gray-300 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:ring-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-600" onClick={() => setShowOpt(!showOpt)}>
+                    <button id="dropdownMenuIconButton" data-dropdown-offset-distance="5" data-dropdown-offset-skidding="-70" data-dropdown-toggle="dropdownDots" className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100  ring-1 ring-inset ring-gray-300 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:ring-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-600" onClick={setShowDrop}>
                         <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
                             <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
                         </svg>
                     </button>
                     {/* <!-- Dropdown menu --> */}
-                    <div id="dropdownDots" className={"absolute right-0 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700  dark:divide-gray-600 " + (!showOpt && "hidden")}>
+                    <div id="dropdownDots" ref={dropdownRef} className={"absolute right-0 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700  dark:divide-gray-600 "}>
                         <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
                             <li>
-                                <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
-                            </li>
-                            <li>
-                                <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
+                                <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">View Profile</a>
                             </li>
                             <li>
                                 <button className="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" onClick={handleTheme}>Dark Mode</button>
@@ -118,25 +127,11 @@ const Conversations = ({ openMsgs, setOpenMsgs }) => {
                     <div className={"absolute inset-y-0 start-0 flex items-center ps-[2.125rem] pointer-events-none " + (search.length !== 0 && " hidde")}>
                         <i className="fa-solid fa-magnifying-glass text-gray-400"></i>
                     </div>
-                    {/* <div className={"absolute inset-y-0 start-0 flex items-center ps-[2.125rem] " + (search.length === 0 && " hidden")}>
-                        <i className="fa-solid fa-xmark text-gray-400 cursor-pointer" onClick={handleCross}></i>
-                    </div> */}
                     <input type="text" id="search" value={search} onChange={handleSearch} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-inset focus:ring-sky-400 block w-full px-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500 focus-visible:outline-none" placeholder="Search by email" />
                     <div className={"absolute inset-y-0 right-0 items-center pe-[2.125rem] flex " + (search.length === 0 && "hidden")}>
                         <i className="fa-solid fa-xmark text-gray-400 cursor-pointer" onClick={handleCross}></i>
                     </div>
                 </div>
-                {/* <!-- Search Dropdown --> */}
-                {/* {searchedUser && <div id="dropdownDots" className={"absolute right-0 z-10 bg-white divide-y divide-gray-100 rounded-b-lg shadow-md dark:bg-gray-700 dark:divide-gray-600 mx-5 w-[-webkit-fill-available]"}>
-                    <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
-                        <li>
-                            <button className="flex items-center gap-2 px-4 py-2 w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white font-bold" onClick={handleSearchedUser}>
-                                <img className="h-8 w-8 flex-none rounded-full bg-gray-50" src={defaultAvatar} alt="defaultAvatar" />
-                                <span>{searchedUser === "" ? "No user found" : searchedUser?.name}</span>
-                            </button>
-                        </li>
-                    </ul>
-                </div>} */}
             </div>
 
             <div className='bg-gray-100 dark:bg-gray-700 rounded-full py-2 px-2 mx-5 mt-3'>
