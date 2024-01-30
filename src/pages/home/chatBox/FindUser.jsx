@@ -3,29 +3,18 @@ import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
 import { useDispatch, useSelector } from 'react-redux'
 import { createConversations, findFriend } from '../../../redux/conversations/action'
 import { openChatBox } from '../../../redux/openChatBox/action'
-import { getMessages, setCurrentConversation } from '../../../redux/messages/action'
 
 const FindUser = () => {
     const dispatch = useDispatch()
     const [search, setSearch] = useState("")
     const searchedUser = useSelector(state => state.conversationReducer.findFriend.data)
     const searchLoader = useSelector(state => state.conversationReducer.createConversation.loading)
-    console.log("searchLoader: ", searchLoader);
-    console.log("searchedUser: ", searchedUser);
     const handleSearch = () => {
         dispatch(findFriend(search))
-        console.log(search);
     }
     const handleSearchedUser = () => {
         dispatch(openChatBox())
         dispatch(createConversations({ senderId: searchedUser._id }))
-        console.log("searchedUser._id:, ", searchedUser._id);
-        // dispatch(emptyFindFriend())
-        console.log("searchedUser: ", searchedUser._id);
-        
-        // for loading messages 
-        // dispatch(getMessages(_id))
-        // dispatch(setCurrentConversation({ conversationId: _id, members }))
     }
     return (
         <div className='w-full sm:rounded-t-2xl shadow bg-sky-50 dark:bg-gray-800 relative flex flex-col pt-4'>
@@ -34,7 +23,7 @@ const FindUser = () => {
                     <i className="fa-solid fa-magnifying-glass text-gray-400"></i>
                 </div>
                 <div className={"dark:bg-gray-700 bg-white rounded-t-lg border-b-2 dark:border-gray-600 p-2 shadow-md " + (!searchedUser && "rounded-b-lg")}>
-                    <input type="text" id="search" value={search} onChange={e => { setSearch(e.target.value); console.log(search.length); }} className="bg-white bg-[#E8F0FE border border-gray-300 text-gray-900 text-sm rounded-lg border-transparent block w-full ps-10 pe-4 p-2.5 dark:bg-gray-700 dark:border-gray-60 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-transparent focus-visible:outline-none" placeholder="Search by email" />
+                    <input type="text" id="search" value={search} onChange={e => { setSearch(e.target.value); }} className="bg-white bg-[#E8F0FE border border-gray-300 text-gray-900 text-sm rounded-lg border-transparent block w-full ps-10 pe-4 p-2.5 dark:bg-gray-700 dark:border-gray-60 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-transparent focus-visible:outline-none" placeholder="Search by email" />
                 </div>
                 <div className={"absolute inset-y-0 right-0 items-center pe-[2.125rem] flex " + (!search && "hidden")}>
                     <i className="fa-solid fa-arrow-right text-sky-400 cursor-pointer" onClick={handleSearch}></i>
@@ -44,7 +33,6 @@ const FindUser = () => {
                     <>
                         <div id="dropdownDots" className={"flex jus absolute right-0 z-10 bg-white rounded-b-lg shadow-md dark:bg-gray-700 mx-5 w-[-webkit-fill-available]"}>
                             <ul className="flex-1 grow py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
-                                {/* <span className='px-5 py-1 text-gray-400 block text-sm pb-'>Recent Search</span> */}
                                 <li>
                                     <button className="flex items-center gap-2 px-5 py-2 w-ful hover:bg-gray-100 w-[-webkit-fill-available] dark:hover:bg-gray-600 dark:hover:text-white text-lg">
                                         <img className="h-8 w-8 flex-none rounded-full bg-gray-50" src={defaultAvatar} alt="defaultAvatar" />

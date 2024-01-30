@@ -2,11 +2,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import ChatBoxHeader from './ChatBoxHeader'
 import Message from '../../../components/Message'
 import { useDispatch, useSelector } from 'react-redux'
-import { callApi } from '../../../apis/APIs'
 import { addMessage, setArrivalMessage } from '../../../redux/messages/action'
 import { io } from 'socket.io-client'
 import { setOnlineFriends } from '../../../redux/conversations/action'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import FindUser from './FindUser'
 import waving from '../../../assets/images/waving.gif'
 import ProfileSec from './ProfileSec'
@@ -17,21 +16,14 @@ const ChatBox = () => {
     const socket = useRef()
     const scrollRef = useRef()
     const location = useLocation()
-    console.log("location: ", location.pathname);
     const dispatch = useDispatch()
     const [newMessage, setNewMessage] = useState("")
-    // const [socket, setSocket] = useState(null)
     const openChatBox = useSelector(state => state.chatBoxReducer.chatBox.open)
     const searchFriendBox = useSelector(state => state.chatBoxReducer.searchFriendBox.open)
     const profileSec = useSelector(state => state.chatBoxReducer.profileSec.open)
-    console.log("profileSec: ",profileSec);
     let messages = useSelector(state => state.messagesReducer.getMessage?.data)
-    console.log("messages: ", messages);
     let currentConversation = useSelector(state => state.messagesReducer.currentConversation?.data)
     const userId = useSelector(state => state.userDataReducer?.data?._id)
-    // const members = useSelector(state => state.conversationReducer.getConversation.data)
-    // console.log("currentConversation:: ", currentConversation);
-    // console.log("messages:: ", messages, userId);
 
     // socket io
     useEffect(() => {
@@ -45,22 +37,13 @@ const ChatBox = () => {
     useEffect(() => {
         socket.current.emit("addUser", userId)
         socket.current.on("getUsers", users => {
-            console.log("users: ", users);
             dispatch(setOnlineFriends(users))
         })
     }, [socket, userId])
 
-    // useEffect(() => {
-    //     // socket?.on("welcome", message => {
-    //     //     console.log("socket message: ", message);
-    //     // })
-    //     socket.emit("addUser", userId)
-    // }, [socket])
-    // console.log(socket);
     const handleSend = async () => {
         const receiverId = currentConversation.members?.find(member => member !== userId)
         socket.current.emit("sendMessage", { senderId: userId, receiverId, text: newMessage })
-
         const message = { conversationId: currentConversation.conversationId, senderId: userId, text: newMessage }
         dispatch(addMessage(message))
         setNewMessage("")
@@ -113,8 +96,7 @@ const ChatBox = () => {
                         </button>
                     </div>
                 </div>
-            </div >
-            }
+            </div >}
         </>
     )
 }

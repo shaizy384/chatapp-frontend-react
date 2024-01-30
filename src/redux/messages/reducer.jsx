@@ -22,7 +22,6 @@ const initial_state = {
 const messagesReducer = (state = initial_state, { type, payload }) => {
     switch (type) {
         case SET_CURRENT_CONVERSATION:
-            console.log("amb amb amb: ", payload);
             return {
                 ...state,
                 currentConversation: {
@@ -64,7 +63,6 @@ const messagesReducer = (state = initial_state, { type, payload }) => {
             }
 
         case ADD_MESSAGE_SUCCESS:
-            console.log("ADD_MESSAGE_SUCCESS ADD_MESSAGE_SUCCESS:: ", payload);
             return {
                 ...state,
                 addMessage: {

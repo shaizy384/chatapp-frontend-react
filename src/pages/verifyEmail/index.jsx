@@ -10,7 +10,6 @@ const VerifyEmail = () => {
   const navigate = useNavigate()
   useEffect(() => {
     dispatch(getUserData())
-    console.log("amb:: ");
   }, [])
   const logout = () => {
     dispatch(Logout())
@@ -26,7 +25,6 @@ const VerifyEmail = () => {
           </div>
           <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">Email Verification Required</h1>
           <p className="mt-6 text-base leading-7 text-gray-600">Please check your email account and click on the link to activate your account.<br />If you don't see an email in your inbox, check your spam mail folder.</p>
-
           <button onClick={logout} className="font-semibold leading-6 text-sky-400 hover:text-sky-500 mt-3">
             Logout
           </button>

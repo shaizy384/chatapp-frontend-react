@@ -9,14 +9,6 @@ import Layout from '../layout';
 import { PublicRoute } from './PublicRoutes';
 
 const Routers = () => {
-  // const dispatch = useDispatch();
-  // const data = useSelector((state) => state.adminDataReducer?.data);
-  // const isAuthorized = useSelector((state) => state.authReducer.isAuthenticated);
-  // useEffect(() => {
-  //   if (data === null && isAuthorized) {
-  //     dispatch(adminData());
-  //   }
-  // }, [data, isAuthorized]);
   return (
     <>
       <BrowserRouter>

@@ -7,7 +7,6 @@ import { signupUser } from '../../redux/register/action';
 
 const AuthForm = ({ type }) => {
     const user = useSelector(state => state.authReducer)
-    // console.log("user: ",user);
     const dispatch = useDispatch()
     let loading;
     let state = useSelector(state => state);
@@ -23,8 +22,6 @@ const AuthForm = ({ type }) => {
     } = useForm();
 
     const onSubmit = (data) => {
-        // e.target.reset();
-        // console.log(data);
         type === 'login' ?
             dispatch(loginUser(data)) :
             dispatch(signupUser(data));
@@ -102,7 +99,7 @@ const AuthForm = ({ type }) => {
                                     name="password"
                                     type="password"
                                     autoComplete="current-password"
-                                    className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-400 sm:text-sm sm:leading-6  focus:outline-none focus:outline-none"
+                                    className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-400 sm:text-sm sm:leading-6 focus:outline-none focus:outline-none"
                                     {...register('password', {
                                         required: "Password is required",
                                         minLength: {
@@ -120,7 +117,6 @@ const AuthForm = ({ type }) => {
                                 type="submit"
                                 className={"flex w-full justify-center rounded-md bg-sky-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 " + (loading && "cursor-not-allowed")}
                             >
-                                {/* {type === 'login' ? "Sign in" : "Register"} */}
                                 {loading ?
                                     <svg className="animate-spin h-5 w-5 m-0.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>

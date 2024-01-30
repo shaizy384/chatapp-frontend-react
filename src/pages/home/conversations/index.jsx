@@ -3,9 +3,8 @@ import UsersList from './UsersList'
 import { useDispatch, useSelector } from 'react-redux'
 import { Logout } from '../../../redux/auth/action'
 import { useNavigate } from 'react-router-dom'
-import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
-import { chatListFilter, emptyFindFriend, emptySearchFriend, findFriend, getConversations, searchFriend } from '../../../redux/conversations/action'
-import { openChatBox, openProfile, openSearchFriend } from '../../../redux/openChatBox/action'
+import { chatListFilter, emptySearchFriend, getConversations, searchFriend } from '../../../redux/conversations/action'
+import { openProfile, openSearchFriend } from '../../../redux/openChatBox/action'
 import { setCurrentConversation } from '../../../redux/messages/action'
 
 const Conversations = () => {
@@ -16,12 +15,8 @@ const Conversations = () => {
     const [theme, setTheme] = useState(null)
     const userData = useSelector(state => state.userDataReducer.data)
     const chatList = useSelector(state => state.conversationReducer.getConversation.data)
-    // const [showOpt, setShowOpt] = useState(false)
     const showChatBox = useSelector(state => state.chatBoxReducer.chatBox.open)
-    const searchedUser = useSelector(state => state.conversationReducer.findFriend.data)
-    console.log("searchedUser ", searchedUser === "" ? "No user found" : search);
 
-    console.log("chatList ", chatList);
     useEffect(() => {
         if (!chatList) {
             dispatch(getConversations())
@@ -44,9 +39,7 @@ const Conversations = () => {
         dropdownRef.current.style.display = "block"
     }
     const showProfile = () => {
-        // dropdownRef.current.style.display = "none"
         dispatch(openProfile())
-        console.log("show prfile");
         dispatch(setCurrentConversation({ user: userData }))
     }
 
@@ -75,23 +68,13 @@ const Conversations = () => {
     }
     const handleChange = (e) => {
         dispatch(chatListFilter(e.target.value))
-        // console.log(e.target.value);
-    }
-    const handleSearchedUser = () => {
-        dispatch(openChatBox())
-        // dispatch(emptyFindFriend())
-        console.log("searchedUser: ", searchedUser._id);
     }
     const handleCross = () => {
         setSearch("");
         dispatch(emptySearchFriend())
-        console.log(search);
     }
     const handleSearch = (e) => {
         setSearch(e.target.value);
-        console.log(search.length);
-        // dispatch(findFriend(search))
-        console.log(search);
         dispatch(searchFriend(e.target.value))
     }
     return (
@@ -163,10 +146,8 @@ const Conversations = () => {
                     </li>
                 </ul>
             </div>
-            {/* </div> */}
             <UsersList />
             <button id="twitter" className="absolute bottom-4 right-4 bg-white transform hover:-translate-y-3 w-12 h-12 shadow-md rounded-full duration-500 text-sky-400 hover:bg-sky-400 hover:text-white text-2xl" onClick={() => dispatch(openSearchFriend())}>
-                {/* <i className="fab fa-twitter"></i> */}
                 <i className="fa-solid fa-user-plus fa-sm ps-1 pb-4"></i>
             </button>
         </div>

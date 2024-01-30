@@ -1,7 +1,7 @@
 import { LOGIN, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT } from "../actionTypes";
 
 const initial_state = {
-    // token: localStorage.getItem('authToken'),
+    token: localStorage.getItem('authToken'),
     isAuthenticated:
         localStorage.getItem('authToken') && localStorage.getItem('authToken') !== undefined
             ? true
@@ -18,7 +18,6 @@ const authReducer = (state = initial_state, { type, payload }) => {
 
         case LOGIN_SUCCESS:
             localStorage.setItem("authToken", payload.auth);
-            console.log(payload);
             return {
                 ...state,
                 loading: false,
