@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom'
 import { loginUser } from '../../redux/auth/action';
 import { useDispatch, useSelector } from 'react-redux';
 import { signupUser } from '../../redux/register/action';
+import logo from '../../assets/images/logo.png'
+import google from '../../assets/images/google.png'
+import facebook from '../../assets/images/facebook.png'
 
 const AuthForm = ({ type }) => {
     const user = useSelector(state => state.authReducer)
@@ -35,18 +38,21 @@ const AuthForm = ({ type }) => {
                     <div className="flex items-center justify-center gap-2">
                         <img
                             width="40"
-                            className="h-10"
-                            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                            className="h-10 mr-0.5"
+                            src={logo}
                             alt="Your Company"
                         />
                         <h2 className='text-3xl font-bold text-sky-400'>GalBaat</h2>
                     </div>
-                    <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                    {/* <h2 className="mt-6 text-center text-2xl font-medium leading-9 tracking-tight text-gray-900">
+                        {type === 'login' ? "Sign in to" : "Register"} your account
+                    </h2> */}
+                    <h2 className="mt-9 text-start text-xl font-medium leading-9 tracking-tight text-gray-900">
                         {type === 'login' ? "Sign in to" : "Register"} your account
                     </h2>
                 </div>
 
-                <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                         {type !== 'login' && <div>
                             <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">Full Name</label>
@@ -128,7 +134,7 @@ const AuthForm = ({ type }) => {
                         </div>
                     </form>
 
-                    <p className="mt-10 text-center text-sm text-gray-500">
+                    <p className="mt-3 mb-8 text-center text-sm text-gray-500">
                         {type === 'login' ? <>
                             Not a member?{' '}
                             <Link to="/register" className="font-semibold leading-6 text-sky-400 hover:text-sky-500">
@@ -142,6 +148,33 @@ const AuthForm = ({ type }) => {
                         </>
                         }
                     </p>
+                    {type !== 'login' && <div className="">
+                        <div className="flex items-center text-sm text-gray-500">
+                            <hr className='w-full' />
+                            <span className='whitespace-nowrap mx-2'>or continue with</span>
+                            <hr className='w-full' />
+                        </div>
+                        <div className="flex gap-3 mt-5">
+                            <button
+                                type="submit"
+                                className={"flex items-center w-full justify-center rounded-md bg-transparent px-3 py-2 font-semibold leading-6 border shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 " + (loading && "cursor-not-allowed")}
+                            >
+                                <div className="flex items-center">
+                                    <img src={google} width={20} alt="google" />
+                                    <span className='ml-2 text-gray-900'>Google</span>
+                                </div>
+                            </button>
+                            <button
+                                type="submit"
+                                className={"flex items-center w-full justify-center rounded-md bg-transparent px-3 py-2 text- font-semibold leading-6 border text- shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 " + (loading && "cursor-not-allowed")}
+                            >
+                                <div className="flex items-center">
+                                    <img src={facebook} width={20} alt="facebook" />
+                                    <span className='ml-2 text-gray-900'>Facebook</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>}
                 </div>
             </div>
         </div>
