@@ -7,6 +7,8 @@ const Layout = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const isAuthenticated = useSelector((state) => state.authReducer.isAuthenticated);
+    const provider = useSelector((state) => state.authReducer.provider);
+    console.log("provider",provider);
     const userData = useSelector((state) => state.userDataReducer.data);
 
     useEffect(() => {

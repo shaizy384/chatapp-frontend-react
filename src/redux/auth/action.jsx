@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { callApi } from "../../apis/APIs";
-import { LOGIN, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT } from "../actionTypes"
+import { LOGIN, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT, SET_PROVIDER } from "../actionTypes"
 
 export const loginUser = (data) => async (dispatch) => {
     dispatch({ type: LOGIN })
@@ -12,6 +12,13 @@ export const loginUser = (data) => async (dispatch) => {
         dispatch({ type: LOGIN_FAILURE })
         toast.error(Data?.data.message)
     }
+}
+
+export const setProvider = (data) => {
+    return ({
+        type: SET_PROVIDER,
+        payload: data,
+    })
 }
 
 export const Logout = () => {

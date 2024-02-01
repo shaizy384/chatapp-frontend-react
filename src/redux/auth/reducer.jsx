@@ -1,4 +1,4 @@
-import { LOGIN, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT } from "../actionTypes";
+import { LOGIN, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT, SET_PROVIDER } from "../actionTypes";
 
 const initial_state = {
     token: localStorage.getItem('authToken'),
@@ -9,10 +9,14 @@ const initial_state = {
     isVerified: false,
     message: null,
     loading: false,
+    provider: localStorage.getItem("provider"),
 };
 
 const authReducer = (state = initial_state, { type, payload }) => {
     switch (type) {
+        case SET_PROVIDER:
+            return { ...state, provider: payload };
+
         case LOGIN:
             return { ...state, loading: true };
 

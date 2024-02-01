@@ -14,7 +14,7 @@ const UsersList = () => {
                         return <UserListItem key={c.id} {...c} />
                     })}
                 </ul> :
-                <span>No Friends Added!</span>
+                <p className='text-sm text-center ps-6 mt-6 dark:text-gray-400'>No Friends Added!</p>
             }
         </div>
     )

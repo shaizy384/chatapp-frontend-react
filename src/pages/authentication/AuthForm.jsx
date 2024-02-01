@@ -1,14 +1,17 @@
 import React from 'react'
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom'
-import { loginUser } from '../../redux/auth/action';
+import { loginUser, setProvider } from '../../redux/auth/action';
 import { useDispatch, useSelector } from 'react-redux';
 import { signupUser } from '../../redux/register/action';
 import logo from '../../assets/images/logo.png'
 import google from '../../assets/images/google.png'
 import facebook from '../../assets/images/facebook.png'
+import Cookies from 'js-cookie';
 
 const AuthForm = ({ type }) => {
+    Cookies.set("amb", "kino")
+    console.log(Cookies.get("session"), Cookies.get("amb"), document.cookie);
     const user = useSelector(state => state.authReducer)
     const dispatch = useDispatch()
     let loading;
@@ -25,10 +28,21 @@ const AuthForm = ({ type }) => {
     } = useForm();
 
     const onSubmit = (data) => {
+        dispatch(setProvider("custom"))
         type === 'login' ?
             dispatch(loginUser(data)) :
             dispatch(signupUser(data));
     };
+    const handleGoogle = () => {
+        const google = window.open("http://localhost:2800/auth/google/", "_self")
+        console.log("google login: ", google);
+        dispatch(setProvider("google"))
+        localStorage.setItem("provider", "google")
+    }
+    const handleFacebook = () => {
+        dispatch(setProvider("facebook"))
+        window.open("http://localhost:2800/auth/facebook/", "_self")
+    }
     const emailPattern =
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zAZ0-9-]+(?:\.[a-zAZ0-9-]+)*$/;
     return (
@@ -148,7 +162,7 @@ const AuthForm = ({ type }) => {
                         </>
                         }
                     </p>
-                    {type !== 'login' && <div className="">
+                    <div className="">
                         <div className="flex items-center text-sm text-gray-500">
                             <hr className='w-full' />
                             <span className='whitespace-nowrap mx-2'>or continue with</span>
@@ -157,6 +171,7 @@ const AuthForm = ({ type }) => {
                         <div className="flex gap-3 mt-5">
                             <button
                                 type="submit"
+                                onClick={handleGoogle}
                                 className={"flex items-center w-full justify-center rounded-md bg-transparent px-3 py-2 font-semibold leading-6 border shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 " + (loading && "cursor-not-allowed")}
                             >
                                 <div className="flex items-center">
@@ -166,6 +181,7 @@ const AuthForm = ({ type }) => {
                             </button>
                             <button
                                 type="submit"
+                                onClick={handleFacebook}
                                 className={"flex items-center w-full justify-center rounded-md bg-transparent px-3 py-2 text- font-semibold leading-6 border text- shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 " + (loading && "cursor-not-allowed")}
                             >
                                 <div className="flex items-center">
@@ -174,7 +190,7 @@ const AuthForm = ({ type }) => {
                                 </div>
                             </button>
                         </div>
-                    </div>}
+                    </div>
                 </div>
             </div>
         </div>

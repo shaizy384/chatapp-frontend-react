@@ -95,7 +95,7 @@ const Conversations = () => {
                         </svg>
                     </button>
                     {/* <!-- Dropdown menu --> */}
-                    <div id="dropdownDots" ref={dropdownRef} className={"absolute right-0 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700  dark:divide-gray-600 "}>
+                    <div id="dropdownDots" ref={dropdownRef} className={"hidden absolute right-0 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700  dark:divide-gray-600 "}>
                         <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
                             <li>
                                 <button onClick={showProfile} className="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">View Profile</button>
