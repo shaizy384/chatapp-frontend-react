@@ -29,12 +29,12 @@ export const PublicRoute = () => {
                 return console.error(err);
             }
         }
-        (provider != "custom") && getUser()
+        (provider !== "custom") && getUser()
     }, [])
     if (isAuthenticated) {
-        if (userData?.isVerified) {
-            return navigate('/home')
-        } else {
+        if (userData && userData.isVerified) {
+            return navigate('/')
+        } else if (userData && !userData.isVerified) {
             return navigate('/verifyemail')
         }
     }

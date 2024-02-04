@@ -18,6 +18,7 @@ export const getConversations = () => async (dispatch) => {
 export const createConversations = (data) => async (dispatch) => {
     dispatch({ type: CREATE_CONVERSATION })
     const url = "chats/"
+    console.log("crete con: ", data);
     const Data = await callApi(url, 'POST', data, true);
     if (Data?.status === 200) {
         dispatch({ type: CREATE_CONVERSATION_SUCCESS, payload: Data?.data.data })

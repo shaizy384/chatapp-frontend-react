@@ -7,11 +7,9 @@ import { signupUser } from '../../redux/register/action';
 import logo from '../../assets/images/logo.png'
 import google from '../../assets/images/google.png'
 import facebook from '../../assets/images/facebook.png'
-import Cookies from 'js-cookie';
+import loader from '../../assets/svgs/loader.svg'
 
 const AuthForm = ({ type }) => {
-    Cookies.set("amb", "kino")
-    console.log(Cookies.get("session"), Cookies.get("amb"), document.cookie);
     const user = useSelector(state => state.authReducer)
     const dispatch = useDispatch()
     let loading;
@@ -28,10 +26,12 @@ const AuthForm = ({ type }) => {
     } = useForm();
 
     const onSubmit = (data) => {
-        dispatch(setProvider("custom"))
-        type === 'login' ?
-            dispatch(loginUser(data)) :
-            dispatch(signupUser(data));
+        if (!loading) {
+            dispatch(setProvider("custom"))
+            type === 'login' ?
+                dispatch(loginUser(data)) :
+                dispatch(signupUser(data));
+        }
     };
     const handleGoogle = () => {
         const google = window.open("http://localhost:2800/auth/google/", "_self")
@@ -58,9 +58,6 @@ const AuthForm = ({ type }) => {
                         />
                         <h2 className='text-3xl font-bold text-sky-400'>GalBaat</h2>
                     </div>
-                    {/* <h2 className="mt-6 text-center text-2xl font-medium leading-9 tracking-tight text-gray-900">
-                        {type === 'login' ? "Sign in to" : "Register"} your account
-                    </h2> */}
                     <h2 className="mt-9 text-start text-xl font-medium leading-9 tracking-tight text-gray-900">
                         {type === 'login' ? "Sign in to" : "Register"} your account
                     </h2>
@@ -119,7 +116,7 @@ const AuthForm = ({ type }) => {
                                     name="password"
                                     type="password"
                                     autoComplete="current-password"
-                                    className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-400 sm:text-sm sm:leading-6 focus:outline-none focus:outline-none"
+                                    className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-400 sm:text-sm sm:leading-6 focus:outline-none"
                                     {...register('password', {
                                         required: "Password is required",
                                         minLength: {
@@ -134,14 +131,11 @@ const AuthForm = ({ type }) => {
 
                         <div>
                             <button
-                                type="submit"
+                                type={"submit"}
                                 className={"flex w-full justify-center rounded-md bg-sky-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 " + (loading && "cursor-not-allowed")}
                             >
                                 {loading ?
-                                    <svg className="animate-spin h-5 w-5 m-0.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg> :
+                                    <img className='h-5 w-5 m-0.5' src={loader} alt="loader" /> :
                                     (type === 'login' ? "Sign in" : "Register")
                                 }
                             </button>

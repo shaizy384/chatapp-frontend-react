@@ -8,7 +8,7 @@ const Layout = () => {
     const dispatch = useDispatch()
     const isAuthenticated = useSelector((state) => state.authReducer.isAuthenticated);
     const provider = useSelector((state) => state.authReducer.provider);
-    console.log("provider",provider);
+    console.log("provider", provider);
     const userData = useSelector((state) => state.userDataReducer.data);
 
     useEffect(() => {
@@ -21,9 +21,9 @@ const Layout = () => {
             return navigate('/login')
         }
         else if (isAuthenticated) {
-            if (userData?.isVerified) {
+            if (userData && userData.isVerified) {
                 return navigate('/')
-            } else {
+            } else if (userData && !userData.isVerified) {
                 return navigate('/verifyemail')
             }
         }

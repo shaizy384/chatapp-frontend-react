@@ -1,12 +1,14 @@
 import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { closeChatBox, openProfile } from '../../../redux/openChatBox/action'
+import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
 
 const ChatBoxHeader = () => {
     const dispatch = useDispatch()
     const dropdownRef = useRef(null);
     const searchedUser = useSelector(state => state.conversationReducer.findFriend.data)
     let currentConversation = useSelector(state => state.messagesReducer.currentConversation?.data?.user)
+    console.log("curent amb: ",currentConversation);
 
     // for closing dropdown
     useEffect(() => {
@@ -33,7 +35,7 @@ const ChatBoxHeader = () => {
                 <div className="flex items-center min-w-0 gap-x-4">
                     <div className="flex items-center gap-1">
                         <span className='sm:hidden dark:text-white' onClick={() => dispatch(closeChatBox())}><i className="fa-solid fa-arrow-left fa-lg cursor-pointer"></i></span>
-                        <img className="h-11 w-11 flex-none rounded-full bg-gray-50" src='https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' alt="" />
+                        <img className="h-11 w-11 flex-none rounded-full bg-gray-50" src={currentConversation?.photoURL ? currentConversation?.photoURL : defaultAvatar} alt="" />
                     </div>
                     <div className="min-w-0 flex-auto">
                         <p className="text-lg sm:text-xl truncate font-semibold leading-6 text-gray-900 dark:text-white">{currentConversation?.name || searchedUser?.name}</p>
@@ -46,7 +48,7 @@ const ChatBoxHeader = () => {
                             <i className="fa-solid fa-ellipsis-vertical fa-lg text-gray-400 cursor-pointer"></i>
                         </button>
                         {/* <!-- Dropdown menu --> */}
-                        <div id="dropdownDots" ref={dropdownRef} className={"absolute right-3 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow-md w- dark:bg-gray-700 dark:divide-gray-600 text-gray-700 dark:text-gray-200"}>
+                        <div id="dropdownDots" ref={dropdownRef} className={"hidden absolute right-3 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow-md w- dark:bg-gray-700 dark:divide-gray-600 text-gray-700 dark:text-gray-200"}>
                             <button onClick={showProfile} className=" w-full block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg dark:hover:text-white">View Profile</button>
                         </div>
                     </div>

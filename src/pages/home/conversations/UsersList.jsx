@@ -11,7 +11,7 @@ const UsersList = () => {
             {usersList?.length > 0 ?
                 <ul role="list" className="divide-y divide-gray-100 dark:divide-gray-600 overflow-auto" ref={listParent}>
                     {usersList?.map((c) => {
-                        return <UserListItem key={c.id} {...c} />
+                        return <UserListItem key={c?.id} {...c} />
                     })}
                 </ul> :
                 <p className='text-sm text-center ps-6 mt-6 dark:text-gray-400'>No Friends Added!</p>

@@ -9,7 +9,7 @@ const initial_state = {
     isVerified: false,
     message: null,
     loading: false,
-    provider: localStorage.getItem("provider"),
+    provider: localStorage.getItem("provider") || "custom",
 };
 
 const authReducer = (state = initial_state, { type, payload }) => {
@@ -37,6 +37,7 @@ const authReducer = (state = initial_state, { type, payload }) => {
 
         case LOGOUT:
             localStorage.removeItem("authToken");
+            localStorage.removeItem("provider");
             return {
                 ...state,
                 loading: false,

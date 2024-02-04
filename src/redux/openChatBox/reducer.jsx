@@ -22,7 +22,11 @@ const chatBoxReducer = (state = initial_state, { type, payload }) => {
             }
 
         case CLOSE_CHATBOX:
-            return { open: false }
+            // return { open: false }
+            return { 
+                ...state,
+                chatBox: { open: false } 
+            }
 
         case OPEN_SEARCH_FRIEND:
             return {
@@ -33,7 +37,8 @@ const chatBoxReducer = (state = initial_state, { type, payload }) => {
 
         case CLOSE_SEARCH_FRIEND:
             return {
-                chatBox: { open: false },
+                ...state,
+                searchFriendBox: { open: false },
             }
 
         case OPEN_PROFILE:
@@ -45,6 +50,7 @@ const chatBoxReducer = (state = initial_state, { type, payload }) => {
 
         case CLOSE_PROFILE:
             return {
+                ...state,
                 profileSec: { open: false },
             }
 

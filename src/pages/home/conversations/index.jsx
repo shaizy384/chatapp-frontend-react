@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom'
 import { chatListFilter, emptySearchFriend, getConversations, searchFriend } from '../../../redux/conversations/action'
 import { openProfile, openSearchFriend } from '../../../redux/openChatBox/action'
 import { setCurrentConversation } from '../../../redux/messages/action'
+import axios from 'axios'
+import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
 
 const Conversations = () => {
     const dropdownRef = useRef(null);
@@ -14,8 +16,11 @@ const Conversations = () => {
     const [search, setSearch] = useState("")
     const [theme, setTheme] = useState(null)
     const userData = useSelector(state => state.userDataReducer.data)
+    const searchFriendBox = useSelector(state => state.chatBoxReducer.searchFriendBox.open)
+    const profileSec = useSelector(state => state.chatBoxReducer.profileSec.open)
     const chatList = useSelector(state => state.conversationReducer.getConversation.data)
     const showChatBox = useSelector(state => state.chatBoxReducer.chatBox.open)
+    const provider = useSelector((state) => state.authReducer.provider);
 
     useEffect(() => {
         if (!chatList) {
@@ -62,9 +67,19 @@ const Conversations = () => {
         setTheme(theme === 'dark' ? 'light' : 'dark')
     }
 
-    const logout = () => {
+    const logout = async () => {
         dispatch(Logout())
         navigate("/login")
+        if (provider !== "custom") {
+            try {
+                await axios.get("http://localhost:2800/auth/logout",
+                    { withCredentials: true }
+                );
+                console.log("logout success: ");
+            } catch (err) {
+                return console.error(err);
+            }
+        }
     }
     const handleChange = (e) => {
         dispatch(chatListFilter(e.target.value))
@@ -78,10 +93,10 @@ const Conversations = () => {
         dispatch(searchFriend(e.target.value))
     }
     return (
-        <div className={(showChatBox && 'hidden') + ' relative flex sm:flex sm:w-[18rem] w-full bg-white dark:bg-gray-800 sm:rounded-t-2xl shadow flex-col h-full'}>
+        <div className={((showChatBox || searchFriendBox || profileSec) && 'hidden') + ' relative flex sm:flex sm:w-[18rem] w-full bg-white dark:bg-gray-800 sm:rounded-t-2xl shadow flex-col h-full'}>
             <div className="flex justify-between items-center gap-x-6 py-6 px-5">
                 <div className="flex min-w-0 gap-x-4">
-                    <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src='https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' alt="" />
+                    <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={userData?.photoURL ? userData?.photoURL : defaultAvatar} alt="profile" />
                     <div className="min-w-0 flex-auto">
                         <p className="text-lg font-semibold leading-6 text-gray-900 dark:text-white truncate">{userData?.name}</p>
                         <p className="mt-1 truncate text-md leading-5 text-gray-500 dark:text-gray-400">Info Account</p>
@@ -117,7 +132,7 @@ const Conversations = () => {
                     <div className={"absolute inset-y-0 start-0 flex items-center ps-[2.125rem] pointer-events-none " + (search.length !== 0 && " hidde")}>
                         <i className="fa-solid fa-magnifying-glass text-gray-400"></i>
                     </div>
-                    <input type="text" id="search" value={search} onChange={handleSearch} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-inset focus:ring-sky-400 block w-full px-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500 focus-visible:outline-none" placeholder="Search by email" />
+                    <input type="text" id="search" value={search} onChange={handleSearch} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-inset focus:ring-sky-400 block w-full px-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500 focus-visible:outline-none" placeholder="Search or enter name" />
                     <div className={"absolute inset-y-0 right-0 items-center pe-[2.125rem] flex " + (search.length === 0 && "hidden")}>
                         <i className="fa-solid fa-xmark text-gray-400 cursor-pointer" onClick={handleCross}></i>
                     </div>
