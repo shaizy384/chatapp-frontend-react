@@ -18,7 +18,7 @@ const ProfileSec = () => {
             console.log("ownConv amb: ");
             const ownConv = usersList.filter(e => e.members[1] === userData._id)
             console.log("ownConv: ", ownConv[0]);
-            if (ownConv[0]) {
+            if (!ownConv[0]) {
                 // if conversation is undefined, create conversation
                 dispatch(createConversations({ senderId: userData._id }))
             }
