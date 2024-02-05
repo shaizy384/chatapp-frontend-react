@@ -8,7 +8,7 @@ const ChatBoxHeader = () => {
     const dropdownRef = useRef(null);
     const searchedUser = useSelector(state => state.conversationReducer.findFriend.data)
     let currentConversation = useSelector(state => state.messagesReducer.currentConversation?.data?.user)
-    console.log("curent amb: ",currentConversation);
+    // console.log("curent amb: ",currentConversation);
 
     // for closing dropdown
     useEffect(() => {

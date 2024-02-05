@@ -41,6 +41,7 @@ const AuthForm = ({ type }) => {
     }
     const handleFacebook = () => {
         dispatch(setProvider("facebook"))
+        localStorage.setItem("provider", "google")
         window.open("http://localhost:2800/auth/facebook/", "_self")
     }
     const emailPattern =

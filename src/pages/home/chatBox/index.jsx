@@ -18,21 +18,32 @@ const ChatBox = () => {
     const location = useLocation()
     const dispatch = useDispatch()
     const [newMessage, setNewMessage] = useState("")
+    const [arrivalMsg, setArrivalMsg] = useState("")
     const openChatBox = useSelector(state => state.chatBoxReducer.chatBox.open)
     const searchFriendBox = useSelector(state => state.chatBoxReducer.searchFriendBox.open)
     const profileSec = useSelector(state => state.chatBoxReducer.profileSec.open)
     let messages = useSelector(state => state.messagesReducer.getMessage?.data)
     let currentConversation = useSelector(state => state.messagesReducer.currentConversation?.data)
+    console.log("currentConversation socket: ", currentConversation);
     const userId = useSelector(state => state.userDataReducer?.data?._id)
 
     // socket io
     useEffect(() => {
+        console.log("useEffect currentConversation socket: ", currentConversation);
         socket.current = io(ENDPOINT)
         socket.current.on("getMessage", data => {
             const { senderId, text } = data
-            dispatch(setArrivalMessage({ senderId, text, createdAt: Date.now() }))
+            // currentConversation?.members.includes(senderId) &&
+            // dispatch(setArrivalMessage({ senderId, text, createdAt: Date.now() }))
+            // console.log("current includes: ", currentConversation?.members.includes(senderId), data, senderId, currentConversation);
+            setArrivalMsg({ senderId, text, createdAt: Date.now() })
         })
     }, [])
+    useEffect(() => {
+        currentConversation?.members.includes(arrivalMsg?.senderId) &&
+            dispatch(setArrivalMessage(arrivalMsg))
+        console.log("useEffect arrivalMsg arrivalMsg: ", arrivalMsg);
+    }, [arrivalMsg])
 
     useEffect(() => {
         socket.current.emit("addUser", userId)

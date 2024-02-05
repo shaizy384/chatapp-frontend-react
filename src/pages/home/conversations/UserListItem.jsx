@@ -26,9 +26,11 @@ const UserListItem = ({ _id, members }) => {
     }, [userListFilter])
 
     useEffect(() => {
+        const friendId = members.find(i => i !== userData?._id)
+        console.log("openid friendId : ", friendId);
         const getUser = async () => {
             try {
-                const res = await callApi(`friends/${members[1]}`, 'GET', '', true);
+                const res = await callApi(`friends/${friendId}`, 'GET', '', true);
                 setUser(res.data?.data);
             } catch (err) {
                 console.log(err);

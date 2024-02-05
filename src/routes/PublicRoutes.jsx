@@ -30,6 +30,15 @@ export const PublicRoute = () => {
             }
         }
         (provider !== "custom") && getUser()
+
+
+        if (isAuthenticated) {
+            if (userData && userData.isVerified) {
+                return navigate('/')
+            } else if (userData && !userData.isVerified) {
+                return navigate('/verifyemail')
+            }
+        }
     }, [])
     if (isAuthenticated) {
         if (userData && userData.isVerified) {

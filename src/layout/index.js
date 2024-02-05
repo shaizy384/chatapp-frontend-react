@@ -27,7 +27,7 @@ const Layout = () => {
                 return navigate('/verifyemail')
             }
         }
-    }, [isAuthenticated, userData?.isVerified])
+    }, [])
 
     return (
         <>
