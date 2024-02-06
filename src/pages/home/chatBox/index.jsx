@@ -9,6 +9,8 @@ import { useLocation } from 'react-router-dom'
 import FindUser from './FindUser'
 import waving from '../../../assets/images/waving.gif'
 import ProfileSec from './ProfileSec'
+import addNotification from 'react-push-notification'
+import logo from '../../../assets/images/logo.png'
 
 const ENDPOINT = "http://localhost:2800"    // backend_host
 
@@ -37,11 +39,25 @@ const ChatBox = () => {
             // dispatch(setArrivalMessage({ senderId, text, createdAt: Date.now() }))
             // console.log("current includes: ", currentConversation?.members.includes(senderId), data, senderId, currentConversation);
             setArrivalMsg({ senderId, text, createdAt: Date.now() })
+            // arrivalMsg?.text && addNotification({
+            //     title: "New message received",
+            //     message: arrivalMsg?.text,
+            //     duration: 4000,
+            //     icon: logo,
+            //     native: true,
+            // })
         })
     }, [])
     useEffect(() => {
-        currentConversation?.members.includes(arrivalMsg?.senderId) &&
-            dispatch(setArrivalMessage(arrivalMsg))
+        currentConversation?.members.includes(arrivalMsg?.senderId) ?
+            dispatch(setArrivalMessage(arrivalMsg)) :
+            (arrivalMsg?.text && addNotification({
+                title: "New message received",
+                message: arrivalMsg?.text,
+                duration: 4000,
+                icon: logo,
+                native: true,
+            }))
         console.log("useEffect arrivalMsg arrivalMsg: ", arrivalMsg);
     }, [arrivalMsg])
 
