@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import ChatBoxHeader from './ChatBoxHeader'
 import Message from '../../../components/Message'
 import { useDispatch, useSelector } from 'react-redux'
-import { addMessage, setArrivalMessage } from '../../../redux/messages/action'
+import { addMessage, getMessages, setArrivalMessage, setCurrentConversation } from '../../../redux/messages/action'
 import { io } from 'socket.io-client'
 import { setOnlineFriends } from '../../../redux/conversations/action'
 import { useLocation } from 'react-router-dom'
@@ -11,6 +11,7 @@ import waving from '../../../assets/images/waving.gif'
 import ProfileSec from './ProfileSec'
 import addNotification from 'react-push-notification'
 import logo from '../../../assets/images/logo.png'
+import { openChatBox } from '../../../redux/openChatBox/action'
 
 const ENDPOINT = "http://localhost:2800"    // backend_host
 
@@ -21,13 +22,15 @@ const ChatBox = () => {
     const dispatch = useDispatch()
     const [newMessage, setNewMessage] = useState("")
     const [arrivalMsg, setArrivalMsg] = useState("")
-    const openChatBox = useSelector(state => state.chatBoxReducer.chatBox.open)
+    const showChatBox = useSelector(state => state.chatBoxReducer.chatBox.open)
     const searchFriendBox = useSelector(state => state.chatBoxReducer.searchFriendBox.open)
     const profileSec = useSelector(state => state.chatBoxReducer.profileSec.open)
     let messages = useSelector(state => state.messagesReducer.getMessage?.data)
     let currentConversation = useSelector(state => state.messagesReducer.currentConversation?.data)
-    console.log("currentConversation socket: ", currentConversation);
+    const userData = useSelector(state => state.userDataReducer?.data)
     const userId = useSelector(state => state.userDataReducer?.data?._id)
+
+    const usersList = useSelector(state => state.conversationReducer.getConversation.data)
 
     // socket io
     useEffect(() => {
@@ -35,17 +38,7 @@ const ChatBox = () => {
         socket.current = io(ENDPOINT)
         socket.current.on("getMessage", data => {
             const { senderId, text } = data
-            // currentConversation?.members.includes(senderId) &&
-            // dispatch(setArrivalMessage({ senderId, text, createdAt: Date.now() }))
-            // console.log("current includes: ", currentConversation?.members.includes(senderId), data, senderId, currentConversation);
             setArrivalMsg({ senderId, text, createdAt: Date.now() })
-            // arrivalMsg?.text && addNotification({
-            //     title: "New message received",
-            //     message: arrivalMsg?.text,
-            //     duration: 4000,
-            //     icon: logo,
-            //     native: true,
-            // })
         })
     }, [])
     useEffect(() => {
@@ -57,6 +50,12 @@ const ChatBox = () => {
                 duration: 4000,
                 icon: logo,
                 native: true,
+                onClick: () => {
+                    dispatch(openChatBox())
+                    const ownConv = usersList.filter(e => e.members[1] === arrivalMsg?.senderId)
+                    dispatch(getMessages(ownConv[0]._id))
+                    dispatch(setCurrentConversation({ conversationId: ownConv[0]._id, members: ownConv[0].members, user: userData }))
+                }
             }))
         console.log("useEffect arrivalMsg arrivalMsg: ", arrivalMsg);
     }, [arrivalMsg])
@@ -85,13 +84,13 @@ const ChatBox = () => {
         <>
             {profileSec && <ProfileSec />}
             {searchFriendBox && <FindUser />}
-            {(!openChatBox && !searchFriendBox && !profileSec) && <div className='w-full sm:rounded-t-2xl shadow bg-sky-50 dark:bg-gray-800 relative hidden sm:flex justify-center items-center'>
+            {(!showChatBox && !searchFriendBox && !profileSec) && <div className='w-full sm:rounded-t-2xl shadow bg-sky-50 dark:bg-gray-800 relative hidden sm:flex justify-center items-center'>
                 <div className='text-center'>
                     <span className='text-lg mb-4 dark:text-white'>Open a converation to start a chat</span><br />
                     <span className='text-sm dark:text-white'>🔒Your personel messages are secured</span>
                 </div>
             </div>}
-            {openChatBox && <div className={'flex flex-col w-full sm:rounded-t-2xl shadow bg-sky-50 dark:bg-gray-800 relative'}>
+            {showChatBox && <div className={'flex flex-col w-full sm:rounded-t-2xl shadow bg-sky-50 dark:bg-gray-800 relative'}>
                 <ChatBoxHeader />
                 {messages?.length > 0 ?
                     <div className="overflow-y-auto">
