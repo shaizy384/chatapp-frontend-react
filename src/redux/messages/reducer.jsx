@@ -1,4 +1,4 @@
-import { GET_MESSAGES, GET_MESSAGES_FAILURE, GET_MESSAGES_SUCCESS, ADD_MESSAGE, ADD_MESSAGE_FAILURE, ADD_MESSAGE_SUCCESS, SET_CURRENT_CONVERSATION, SET_ARRIVAL_MESSAGE } from "../actionTypes";
+import { GET_MESSAGES, GET_MESSAGES_FAILURE, GET_MESSAGES_SUCCESS, ADD_MESSAGE, ADD_MESSAGE_FAILURE, ADD_MESSAGE_SUCCESS, SET_CURRENT_CONVERSATION, SET_ARRIVAL_MESSAGE, SET_TYPERS } from "../actionTypes";
 
 const initial_state = {
     getMessage: {
@@ -13,6 +13,11 @@ const initial_state = {
         error: null,
     },
     conversationId: {
+        loading: false,
+        data: null,
+        error: null,
+    },
+    setTypers: {
         loading: false,
         data: null,
         error: null,
@@ -88,6 +93,14 @@ const messagesReducer = (state = initial_state, { type, payload }) => {
                 ...state,
                 getMessage: {
                     data: [...state.getMessage.data, payload]
+                }
+            };
+
+        case SET_TYPERS:
+            return {
+                ...state,
+                setTypers: {
+                    data: payload
                 }
             };
 

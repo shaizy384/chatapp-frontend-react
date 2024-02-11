@@ -3,12 +3,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { closeChatBox, openProfile } from '../../../redux/openChatBox/action'
 import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
 
-const ChatBoxHeader = () => {
+const ChatBoxHeader = ({ online, isTyping }) => {
     const dispatch = useDispatch()
     const dropdownRef = useRef(null);
     const searchedUser = useSelector(state => state.conversationReducer.findFriend.data)
-    let currentConversation = useSelector(state => state.messagesReducer.currentConversation?.data?.user)
-    // console.log("curent amb: ",currentConversation);
+    let currentConversation = useSelector(state => state.messagesReducer.currentConversation?.data)
+    const user = useSelector(state => state.messagesReducer.currentConversation?.data?.user)
+    // const onlineFriends = useSelector(state => state.conversationReducer.setOnlineFriends?.data)
+    // const online = onlineFriends?.filter(u => u.userId === user._id).length === 1
+    // console.log("online: ",online,onlineFriends,user);
+
+    // const typers = useSelector(state => state.messagesReducer.setTypers?.data)
+    // const isTyping = typers?.filter(t => (t.userId === user._id) && t.conversationId === currentConversation.conversationId && t.typing).length > 0
+    // console.log("typers typers: ", typers, currentConversation, isTyping);
 
     // for closing dropdown
     useEffect(() => {
@@ -35,11 +42,13 @@ const ChatBoxHeader = () => {
                 <div className="flex items-center min-w-0 gap-x-4">
                     <div className="flex items-center gap-1">
                         <span className='sm:hidden dark:text-white' onClick={() => dispatch(closeChatBox())}><i className="fa-solid fa-arrow-left fa-lg cursor-pointer"></i></span>
-                        <img className="h-11 w-11 flex-none rounded-full bg-gray-50" src={currentConversation?.photoURL ? currentConversation?.photoURL : defaultAvatar} alt="" />
+                        <img className="h-11 w-11 flex-none rounded-full bg-gray-50" src={user?.photoURL ? user?.photoURL : defaultAvatar} alt="" />
                     </div>
                     <div className="min-w-0 flex-auto">
-                        <p className="text-lg sm:text-xl truncate font-semibold leading-6 text-gray-900 dark:text-white">{currentConversation?.name || searchedUser?.name}</p>
-                        <p className="truncate text-md leading-5 text-sky-600 dark:text-sky-500">typing...</p>
+                        <p className="text-lg sm:text-xl truncate font-semibold leading-6 text-gray-900 dark:text-white">{user?.name || searchedUser?.name}</p>
+                        {isTyping &&
+                            <p className="truncate text-md leading-5 text-sky-600 dark:text-sky-500">typing...</p>}
+                        {!isTyping && online && < p className="truncate text-md leading-5 text-sky-600 dark:text-sky-500">Online</p>}
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -53,7 +62,7 @@ const ChatBoxHeader = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     )
 }
