@@ -15,7 +15,7 @@ export const PublicRoute = () => {
         if (isAuthenticated && !userData) {
             dispatch(getUserData())
         }
-    }, [userData])
+    }, [isAuthenticated, userData])
     useEffect(() => {
         const getUser = async () => {
             try {
@@ -39,7 +39,7 @@ export const PublicRoute = () => {
                 return navigate('/verifyemail')
             }
         }
-    }, [])
+    }, [isAuthenticated])
     if (isAuthenticated) {
         if (userData && userData.isVerified) {
             return navigate('/')

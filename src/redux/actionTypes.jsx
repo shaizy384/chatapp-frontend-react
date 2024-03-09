@@ -8,6 +8,10 @@ export const SIGNUP = 'SIGNUP';
 export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
 export const SIGNUP_FAILURE = 'SIGNUP_FAILURE';
 
+export const UPLOAD_PIC = 'UPLOAD_PIC';
+export const UPLOAD_PIC_SUCCESS = 'UPLOAD_PIC_SUCCESS';
+export const UPLOAD_PIC_FAILURE = 'UPLOAD_PIC_FAILURE';
+
 export const USER_DATA = 'USER_DATA';
 export const USER_DATA_SUCCESS = 'USER_DATA_SUCCESS';
 export const USER_DATA_FAILURE = 'USER_DATA_FAILURE';

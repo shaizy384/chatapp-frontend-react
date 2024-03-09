@@ -1,16 +1,20 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom'
 import { loginUser, setProvider } from '../../redux/auth/action';
 import { useDispatch, useSelector } from 'react-redux';
-import { signupUser } from '../../redux/register/action';
+import { signupUser, uploadProfile } from '../../redux/register/action';
 import logo from '../../assets/images/logo.png'
 import google from '../../assets/images/google.png'
 import facebook from '../../assets/images/facebook.png'
-import loader from '../../assets/svgs/loader.svg'
+import loader from '../../assets/svgs/loader copy.svg'
 
 const AuthForm = ({ type }) => {
+    const fileInpRef = useRef()
     const user = useSelector(state => state.authReducer)
+    const imageLoading = useSelector(state => state.uploadPicReducer.uploadPic?.loading)
+    const imageURL = useSelector(state => state.uploadPicReducer.uploadPic?.data)
+    console.log(imageLoading, imageURL);
     const dispatch = useDispatch()
     let loading;
     let state = useSelector(state => state);
@@ -24,6 +28,19 @@ const AuthForm = ({ type }) => {
         handleSubmit,
         formState: { errors }
     } = useForm();
+
+    const handleFile = (e) => {
+        console.log(e.target.files[0])
+        const pic = e.target.files[0]
+        if (pic && (pic.type === "image/jpeg" || pic.type === "image/png")) {
+            const data = new FormData();
+            data.append("file", pic)
+            data.append("upload_preset", "galbaat-chat-app")
+            data.append("cloud_name", "shaizycreation")
+            // data.append("file", pic)
+            dispatch(uploadProfile(data))
+        }
+    }
 
     const onSubmit = (data) => {
         if (!loading) {
@@ -66,22 +83,44 @@ const AuthForm = ({ type }) => {
 
                 <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-                        {type !== 'login' && <div>
-                            <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">Full Name</label>
-                            <div className="mt-2">
-                                <input
-                                    id="name"
-                                    name="name"
-                                    type="name"
-                                    autoComplete="name"
-                                    className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-400 sm:text-sm sm:leading-6 focus:outline-none"
-                                    {...register('name', {
-                                        required: "Name is required"
-                                    })}
-                                />
-                                <span className='text-rose-500'>{errors.name?.message}</span>
+                        {type !== 'login' && <>
+                            {/* Uplload Photo */}
+                            <div className="col-span-full">
+                                <label htmlFor="photo" className="block text-sm font-medium leading-6 text-gray-900">Photo</label>
+                                <div className="mt-2 flex items-center gap-x-3">
+                                    {imageURL ?
+                                        <img src={imageURL} className='h-14 w-14 rounded-full' alt="user_profile" /> :
+                                        <svg className="h-14 w-14 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                            <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clipRule="evenodd" />
+                                        </svg>}
+                                    <button htmlFor="file-upload" type="button" className={`rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 ${imageLoading && " opacity-60 cursor-not-allowed"}`} onClick={() => !imageLoading && fileInpRef.current.click()}>
+                                        Change
+                                        {/* {!imageLoading ?
+                                            <img className='h-5 w-5 m-0.5 text-yellow-500' src={loader} alt="loader" /> :
+                                            "Change"
+                                        } */}
+                                    </button>
+                                    <input id="file-upload" name="file-upload" type="file" accept='image/*' className="sr-only" ref={fileInpRef} onChange={handleFile} />
+                                </div>
                             </div>
-                        </div>}
+
+                            <div>
+                                <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">Full Name</label>
+                                <div className="mt-2">
+                                    <input
+                                        id="name"
+                                        name="name"
+                                        type="name"
+                                        autoComplete="name"
+                                        className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-400 sm:text-sm sm:leading-6 focus:outline-none"
+                                        {...register('name', {
+                                            required: "Name is required"
+                                        })}
+                                    />
+                                    <span className='text-rose-500'>{errors.name?.message}</span>
+                                </div>
+                            </div>
+                        </>}
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">Email address</label>
                             <div className="mt-2">

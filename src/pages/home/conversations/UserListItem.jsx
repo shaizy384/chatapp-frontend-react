@@ -8,6 +8,7 @@ import { getMessages, setCurrentConversation } from '../../../redux/messages/act
 const UserListItem = ({ _id, members }) => {
     const dispatch = useDispatch()
     const [user, setUser] = useState()
+    const [users, setUsers] = useState([])
     const [showUser, setShowUser] = useState(false)
     const userListFilter = useSelector(state => state.conversationReducer.chatListFilter?.data)
     const onlineFriends = useSelector(state => state.conversationReducer.setOnlineFriends?.data)
@@ -27,17 +28,23 @@ const UserListItem = ({ _id, members }) => {
 
     useEffect(() => {
         const friendId = members.find(i => i !== userData?._id)
-        console.log("openid friendId : ", friendId);
+        // console.log("openid friendId : ", friendId);
         const getUser = async () => {
             try {
                 const res = await callApi(`friends/${friendId}`, 'GET', '', true);
-                setUser(res.data?.data);
+                setUser(res?.data?.data);
+                console.log({ ...res?.data?.data });
+                setUsers([{ ...res?.data?.data }, ...users]);
+                // setUsers({ ...users, [friendId]: res.data?.data });
+                console.log(users);
             } catch (err) {
                 console.log(err);
             }
         };
         getUser();
+        console.log(users);
     }, [members[1]])
+
     const handleChat = () => {
         dispatch(openChatBox())
         dispatch(getMessages(_id))

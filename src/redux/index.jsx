@@ -7,10 +7,12 @@ import friendDetailsReducer from "./friendDetails/reducer";
 import messagesReducer from "./messages/reducer";
 import userDataReducer from "./userData/reducer";
 import onlineFriends from "./onlineFriends/reducer";
+import uploadPicReducer from "./uploadPic/reducer";
 
 const reducers = combineReducers({
     authReducer: authReducer,
     signupReducer: signupReducer,
+    uploadPicReducer: uploadPicReducer,
     chatBoxReducer: chatBoxReducer,
     conversationReducer: conversationReducer,
     friendDetailsReducer: friendDetailsReducer,
