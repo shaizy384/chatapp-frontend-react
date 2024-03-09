@@ -3,11 +3,12 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom'
 import { loginUser, setProvider } from '../../redux/auth/action';
 import { useDispatch, useSelector } from 'react-redux';
-import { signupUser, uploadProfile } from '../../redux/register/action';
+import { signupUser } from '../../redux/register/action';
 import logo from '../../assets/images/logo.png'
 import google from '../../assets/images/google.png'
 import facebook from '../../assets/images/facebook.png'
 import loader from '../../assets/svgs/loader copy.svg'
+import { uploadProfile } from '../../redux/uploadPic/action';
 
 const AuthForm = ({ type }) => {
     const fileInpRef = useRef()
@@ -37,7 +38,6 @@ const AuthForm = ({ type }) => {
             data.append("file", pic)
             data.append("upload_preset", "galbaat-chat-app")
             data.append("cloud_name", "shaizycreation")
-            // data.append("file", pic)
             dispatch(uploadProfile(data))
         }
     }
