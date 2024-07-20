@@ -56,7 +56,7 @@ const ChatBox = () => {
     }, [])
 
     useEffect(() => {
-        currentConversation?.members.includes(arrivalMsg?.senderId) ?
+        currentConversation?.members?.includes(arrivalMsg?.senderId) ?
             dispatch(setArrivalMessage(arrivalMsg)) :
             (arrivalMsg?.text && addNotification({
                 title: "New message received",
@@ -72,8 +72,13 @@ const ChatBox = () => {
                 }
             }))
     }, [arrivalMsg])
+    console.log("userData userData userData: ", userData);
+    useEffect(() => {
+        console.log("onlineFriends onlineFriends onlineFriends: ", onlineFriends);
+    }, [onlineFriends])
 
     useEffect(() => {
+        if (!userId) return;
         socket.current.emit("addUser", userId)
         socket.current.on("getUsers", users => {
             dispatch(setOnlineFriends(users))

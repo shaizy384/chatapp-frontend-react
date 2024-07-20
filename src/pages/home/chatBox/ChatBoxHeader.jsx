@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { closeChatBox, openProfile } from '../../../redux/openChatBox/action'
 import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
+import ProfileDialog from '../../../components/ProfileDialog'
 
 const ChatBoxHeader = ({ online, isTyping }) => {
     const dispatch = useDispatch()
@@ -58,7 +59,8 @@ const ChatBoxHeader = ({ online, isTyping }) => {
                         </button>
                         {/* <!-- Dropdown menu --> */}
                         <div id="dropdownDots" ref={dropdownRef} className={"hidden absolute right-3 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow-md w- dark:bg-gray-700 dark:divide-gray-600 text-gray-700 dark:text-gray-200"}>
-                            <button onClick={showProfile} className=" w-full block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg dark:hover:text-white">View Profile</button>
+                            {/* <button onClick={showProfile} className=" w-full block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg dark:hover:text-white">View Profile</button> */}
+                            <ProfileDialog />
                         </div>
                     </div>
                 </div>

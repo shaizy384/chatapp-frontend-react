@@ -20,10 +20,10 @@ const Layout = () => {
         if (!isAuthenticated) {
             return navigate('/login')
         }
-        else if (isAuthenticated) {
+        else if (isAuthenticated && userData) {
             if (userData && userData.isVerified) {
                 return navigate('/')
-            } else if (userData && !userData.isVerified) {
+            } else if (userData && userData.isVerified === false) {
                 return navigate('/verifyemail')
             }
         }
