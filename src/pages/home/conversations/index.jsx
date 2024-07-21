@@ -45,23 +45,26 @@ const Conversations = () => {
         dropdownRef.current.style.display = "block"
     }
     const showProfile = () => {
+        dropdownRef.current.style.display = "none"
         dispatch(openProfile())
         dispatch(setCurrentConversation({ user: userData }))
     }
     console.log("localStorage.getItem(): ", localStorage.getItem("color-scheme"));
     // Dark and light theme
     useEffect(() => {
-        // const local = localStorage.getItem("color-scheme")
-        // if (local) {
-        //     local === "dark" ? setTheme('dark') : setTheme('light')
-        // } else {
-        if (window.matchMedia('(prefers-color-scheme:dark)'.match)) {
-            setTheme('dark')
+        const isDark = localStorage.getItem("theme-color")
+        console.log("isDark isDark: ", isDark);
+        if (isDark) {
+            isDark === 'dark' ? setTheme('dark') : setTheme('light')
         } else {
-            setTheme('light')
+            if (window.matchMedia('(prefers-color-scheme:dark)'.match)) {
+                setTheme('dark')
+            } else {
+                setTheme('light')
+            }
         }
-        // }
     }, [])
+
     useEffect(() => {
         if (theme === 'light') {
             // localStorage.setItem("color-scheme", 'light')
@@ -71,10 +74,13 @@ const Conversations = () => {
             document.documentElement.classList.add('dark')
         }
     }, [theme])
+
     const handleTheme = () => {
-        // const local = localStorage.getItem("color-scheme")
+        dropdownRef.current.style.display = "none"
         setTheme(theme === 'dark' ? 'light' : 'dark')
-        // local === "dark" ? setTheme('dark') : setTheme('light')
+        theme === 'dark' ?
+            localStorage.setItem("theme-color", 'light') :
+            localStorage.setItem("theme-color", 'dark')
     }
 
     const logout = async () => {
