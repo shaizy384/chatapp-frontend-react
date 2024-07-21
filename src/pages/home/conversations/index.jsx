@@ -3,10 +3,11 @@ import UsersList from './UsersList'
 import { useDispatch, useSelector } from 'react-redux'
 import { Logout } from '../../../redux/auth/action'
 import { useNavigate } from 'react-router-dom'
-import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
-import { chatListFilter, emptyFindFriend, emptySearchFriend, findFriend, getConversations, searchFriend } from '../../../redux/conversations/action'
-import { openChatBox, openProfile, openSearchFriend } from '../../../redux/openChatBox/action'
+import { chatListFilter, emptySearchFriend, getConversations, searchFriend } from '../../../redux/conversations/action'
+import { openProfile, openSearchFriend } from '../../../redux/openChatBox/action'
 import { setCurrentConversation } from '../../../redux/messages/action'
+import axios from 'axios'
+import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
 
 const Conversations = () => {
     const dropdownRef = useRef(null);
@@ -16,13 +17,12 @@ const Conversations = () => {
     const [theme, setTheme] = useState(null)
     // const local = localStorage.getItem("color-scheme")
     const userData = useSelector(state => state.userDataReducer.data)
+    const searchFriendBox = useSelector(state => state.chatBoxReducer.searchFriendBox.open)
+    const profileSec = useSelector(state => state.chatBoxReducer.profileSec.open)
     const chatList = useSelector(state => state.conversationReducer.getConversation.data)
-    // const [showOpt, setShowOpt] = useState(false)
     const showChatBox = useSelector(state => state.chatBoxReducer.chatBox.open)
-    const searchedUser = useSelector(state => state.conversationReducer.findFriend.data)
-    console.log("searchedUser ", searchedUser === "" ? "No user found" : search);
+    const provider = useSelector((state) => state.authReducer.provider);
 
-    console.log("chatList ", chatList);
     useEffect(() => {
         if (!chatList) {
             dispatch(getConversations())
@@ -45,9 +45,7 @@ const Conversations = () => {
         dropdownRef.current.style.display = "block"
     }
     const showProfile = () => {
-        // dropdownRef.current.style.display = "none"
         dispatch(openProfile())
-        console.log("show prfile");
         dispatch(setCurrentConversation({ user: userData }))
     }
     console.log("localStorage.getItem(): ", localStorage.getItem("color-scheme"));
@@ -79,36 +77,36 @@ const Conversations = () => {
         // local === "dark" ? setTheme('dark') : setTheme('light')
     }
 
-    const logout = () => {
+    const logout = async () => {
         dispatch(Logout())
         navigate("/login")
+        if (provider !== "custom") {
+            try {
+                await axios.get("http://localhost:2800/auth/logout",
+                    { withCredentials: true }
+                );
+                console.log("logout success: ");
+            } catch (err) {
+                return console.error(err);
+            }
+        }
     }
     const handleChange = (e) => {
         dispatch(chatListFilter(e.target.value))
-        // console.log(e.target.value);
-    }
-    const handleSearchedUser = () => {
-        dispatch(openChatBox())
-        // dispatch(emptyFindFriend())
-        console.log("searchedUser: ", searchedUser._id);
     }
     const handleCross = () => {
         setSearch("");
         dispatch(emptySearchFriend())
-        console.log(search);
     }
     const handleSearch = (e) => {
         setSearch(e.target.value);
-        console.log(search.length);
-        // dispatch(findFriend(search))
-        console.log(search);
         dispatch(searchFriend(e.target.value))
     }
     return (
-        <div className={(showChatBox && 'hidden') + ' relative flex sm:flex sm:w-[18rem] w-full bg-white dark:bg-gray-800 sm:rounded-t-2xl shadow flex-col h-full'}>
+        <div className={((showChatBox || searchFriendBox || profileSec) && 'hidden') + ' relative flex sm:flex sm:w-[18rem] w-full bg-white dark:bg-gray-800 sm:rounded-t-2xl shadow flex-col h-full'}>
             <div className="flex justify-between items-center gap-x-6 py-6 px-5">
                 <div className="flex min-w-0 gap-x-4">
-                    <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src='https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' alt="" />
+                    <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={userData?.photoURL ? userData?.photoURL : defaultAvatar} alt="profile" />
                     <div className="min-w-0 flex-auto">
                         <p className="text-lg font-semibold leading-6 text-gray-900 dark:text-white truncate">{userData?.name}</p>
                         <p className="mt-1 truncate text-md leading-5 text-gray-500 dark:text-gray-400">Info Account</p>
@@ -122,7 +120,7 @@ const Conversations = () => {
                         </svg>
                     </button>
                     {/* <!-- Dropdown menu --> */}
-                    <div id="dropdownDots" ref={dropdownRef} className={"absolute right-0 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700  dark:divide-gray-600 "}>
+                    <div id="dropdownDots" ref={dropdownRef} className={"hidden absolute right-0 z-20 bg-white divide-y divide-gray-100 rounded-lg shadow-md w-44 dark:bg-gray-700  dark:divide-gray-600 "}>
                         <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
                             <li>
                                 <button onClick={showProfile} className="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">View Profile</button>
@@ -144,7 +142,7 @@ const Conversations = () => {
                     <div className={"absolute inset-y-0 start-0 flex items-center ps-[2.125rem] pointer-events-none "}>
                         <i className="fa-solid fa-magnifying-glass text-gray-400"></i>
                     </div>
-                    <input type="text" id="search" value={search} onChange={handleSearch} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-inset focus:ring-sky-400 block w-full px-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500 focus-visible:outline-none" placeholder="Search by email" />
+                    <input type="text" id="search" value={search} onChange={handleSearch} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-inset focus:ring-sky-400 block w-full px-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500 focus-visible:outline-none" placeholder="Search or enter name" />
                     <div className={"absolute inset-y-0 right-0 items-center pe-[2.125rem] flex " + (search.length === 0 && "hidden")}>
                         <i className="fa-solid fa-xmark text-gray-400 cursor-pointer" onClick={handleCross}></i>
                     </div>
@@ -173,10 +171,8 @@ const Conversations = () => {
                     </li>
                 </ul>
             </div>
-            {/* </div> */}
             <UsersList />
             <button id="twitter" className="absolute bottom-4 right-4 bg-white transform hover:-translate-y-3 w-12 h-12 shadow-md rounded-full duration-500 text-sky-400 hover:bg-sky-400 hover:text-white text-2xl" onClick={() => dispatch(openSearchFriend())}>
-                {/* <i className="fab fa-twitter"></i> */}
                 <i className="fa-solid fa-user-plus fa-sm ps-1 pb-4"></i>
             </button>
         </div>

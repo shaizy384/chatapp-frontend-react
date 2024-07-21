@@ -2,21 +2,20 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { openChatBox } from '../../../redux/openChatBox/action'
 import defaultAvatar from '../../../assets/images/default-avatar-icon.png'
-import { getFriendDetails } from '../../../redux/friendDetails/action'
-import { callApi } from '../../../apis/APIs'
+// import { callApi } from '../../../apis/APIs'
 import { getMessages, setCurrentConversation } from '../../../redux/messages/action'
 
-const UserListItem = ({ _id, members }) => {
+const UserListItem = ({ _id, members, friend_id, friendData }) => {
     const dispatch = useDispatch()
-    const [user, setUser] = useState()
+    // const [user, setUser] = useState()
+    // const [users, setUsers] = useState([])
     const [showUser, setShowUser] = useState(false)
     const userListFilter = useSelector(state => state.conversationReducer.chatListFilter?.data)
-    // console.log("chatListFilter: ", chatListFilter);
     const onlineFriends = useSelector(state => state.conversationReducer.setOnlineFriends?.data)
     const searchFriend = useSelector(state => state.conversationReducer.searchFriend?.data)
-    console.log("searchFriend: ", searchFriend, user?.name.toLowerCase(), user?.name.toLowerCase().includes(searchFriend));
-    const online = onlineFriends?.filter(user => user.userId === members[1]).length > 0
-    // console.log("onlne: ", onlineFriends, online, _id);
+    const online = onlineFriends?.filter(user => user.userId === friend_id).length > 0
+    const userData = useSelector(state => state.userDataReducer.data)
+
     useEffect(() => {
         if (userListFilter === "all") {
             setShowUser(true);
@@ -25,50 +24,54 @@ const UserListItem = ({ _id, members }) => {
         } else {
             setShowUser(false);
         }
-    }, [userListFilter])
+    }, [userListFilter, online])
 
-    useEffect(() => {
-        const getUser = async () => {
-            try {
-                const res = await callApi(`friends/${members[1]}`, 'GET', '', true);
-                setUser(res.data?.data);
-            } catch (err) {
-                console.log(err);
-            }
-        };
-        getUser();
-    }, [members[1]])
+    // useEffect(() => {
+    //     const friendId = members.find(i => i !== userData?._id)
+    //     // console.log("openid friendId : ", friendId);
+    //     const getUser = async () => {
+    //         try {
+    //             const res = await callApi(`friends/${friendId}`, 'GET', '', true);
+    //             setUser(res?.data?.data);
+    //             console.log({ ...res?.data?.data });
+    //             setUsers([{ ...res?.data?.data }, ...users]);
+    //             // setUsers({ ...users, [friendId]: res.data?.data });
+    //             console.log(users);
+    //         } catch (err) {
+    //             console.log(err);
+    //         }
+    //     };
+    //     getUser();
+    //     console.log(users);
+    // }, [members[1]])
+
     const handleChat = () => {
+        console.log("_id: ", _id);
         dispatch(openChatBox())
         dispatch(getMessages(_id))
-        dispatch(setCurrentConversation({ conversationId: _id, members, user }))
+        // dispatch(setCurrentConversation({ conversationId: _id, members, user }))
+        dispatch(setCurrentConversation({ conversationId: _id, members, user: friendData }))
     }
     return (
         <>
-            {/* <> */}
             {((showUser) &&
-                user?.name.toLowerCase().includes(searchFriend)) &&
+                friendData?.name.toLowerCase().includes(searchFriend)) &&
                 <li className="flex justify-between gap-x-6 py-5 px-5 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600" onClick={handleChat}>
                     <div className="flex min-w-0 gap-x-4">
-                        <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={defaultAvatar} alt="defaultAvatar" />
-                        <div className="min-w-0 flex-auto">
-                            <p className="text-lg font-semibold leading-6 text-gray-900 dark:text-white truncate">{user?.name}</p>
-                            <p className="mt-1 truncate text-md leading-5 text-gray-500 dark:text-gray-400">My message</p>
+                        <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={friendData.photoURL ? friendData.photoURL : defaultAvatar} alt="defaultAvatar" />
+                        <div className="min-w-0 flex-auto grid items-center">
+                            <p className="text-lg font-semibold leading-6 text-gray-900 dark:text-white truncate">{friendData?.name}</p>
+                            {/* <p className="mt-1 truncate text-md leading-5 text-gray-500 dark:text-gray-400">My message</p> */}
+                            {friendData?._id === userData?._id && <p className="mt-1 truncate text-md leading-5 text-gray-500 dark:text-gray-400">Message yourself</p>}
                         </div>
                     </div>
                     <div className="shrink-0 flex flex-col items-end">
-                        {/* {person.lastSeen ? (
-                        <p className="mt-1 text-md leading-5 text-gray-500">
-                            <time dateTime='2023-01-23T13:23Z'>3h ago</time>
-                        </p>
-                    ) : ( */}
                         {online && <div className="mt-1 flex items-center gap-x-1.5">
                             <div className="flex-none rounded-full bg-sky-500/20 p-1">
                                 <div className="h-1.5 w-1.5 rounded-full bg-sky-500" />
                             </div>
                             <p className="text-xs leading-5 text-gray-500 dark:text-gray-400">Online</p>
                         </div>}
-                        {/* )} */}
                     </div>
                 </li>
             }

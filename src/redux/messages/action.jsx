@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { callApi } from "../../apis/APIs";
-import { GET_MESSAGES, GET_MESSAGES_FAILURE, GET_MESSAGES_SUCCESS, ADD_MESSAGE, ADD_MESSAGE_FAILURE, ADD_MESSAGE_SUCCESS, SET_CURRENT_CONVERSATION, SET_ARRIVAL_MESSAGE } from "../actionTypes"
+import { GET_MESSAGES, GET_MESSAGES_FAILURE, GET_MESSAGES_SUCCESS, ADD_MESSAGE, ADD_MESSAGE_FAILURE, ADD_MESSAGE_SUCCESS, SET_CURRENT_CONVERSATION, SET_ARRIVAL_MESSAGE, SET_TYPERS } from "../actionTypes"
 
 export const getMessages = (id) => async (dispatch) => {
     dispatch({ type: GET_MESSAGES })
@@ -36,6 +36,13 @@ export const addMessage = (data) => async (dispatch) => {
 export const setArrivalMessage = (data) => {
     return ({
         type: SET_ARRIVAL_MESSAGE,
+        payload: data
+    })
+}
+
+export const setTypers = (data) => {
+    return ({
+        type: SET_TYPERS,
         payload: data
     })
 }

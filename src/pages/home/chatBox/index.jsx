@@ -2,65 +2,111 @@ import React, { useEffect, useRef, useState } from 'react'
 import ChatBoxHeader from './ChatBoxHeader'
 import Message from '../../../components/Message'
 import { useDispatch, useSelector } from 'react-redux'
-import { callApi } from '../../../apis/APIs'
-import { addMessage, setArrivalMessage } from '../../../redux/messages/action'
+import { addMessage, getMessages, setArrivalMessage, setCurrentConversation, setTypers } from '../../../redux/messages/action'
 import { io } from 'socket.io-client'
 import { setOnlineFriends } from '../../../redux/conversations/action'
-import { useLocation, useParams } from 'react-router-dom'
 import FindUser from './FindUser'
 import waving from '../../../assets/images/waving.gif'
 import ProfileSec from './ProfileSec'
+import addNotification from 'react-push-notification'
+import logo from '../../../assets/images/logo.png'
+import { openChatBox } from '../../../redux/openChatBox/action'
+import LoadingMessage from '../../../components/LoadingMessage'
 
 const ENDPOINT = "http://localhost:2800"    // backend_host
 
 const ChatBox = () => {
     const socket = useRef()
     const scrollRef = useRef()
-    const location = useLocation()
-    console.log("location: ", location.pathname);
     const dispatch = useDispatch()
+    const [typing, setTyping] = useState(false)
     const [newMessage, setNewMessage] = useState("")
-    // const [socket, setSocket] = useState(null)
-    const openChatBox = useSelector(state => state.chatBoxReducer.chatBox.open)
+    const [arrivalMsg, setArrivalMsg] = useState("")
+    const [typingTimeout, setTypingTimeout] = useState("")
+    // const typingTimeout = useRef(null);
+    const showChatBox = useSelector(state => state.chatBoxReducer.chatBox.open)
     const searchFriendBox = useSelector(state => state.chatBoxReducer.searchFriendBox.open)
     const profileSec = useSelector(state => state.chatBoxReducer.profileSec.open)
-    console.log("profileSec: ",profileSec);
     let messages = useSelector(state => state.messagesReducer.getMessage?.data)
-    console.log("messages: ", messages);
     let currentConversation = useSelector(state => state.messagesReducer.currentConversation?.data)
+    const userData = useSelector(state => state.userDataReducer?.data)
     const userId = useSelector(state => state.userDataReducer?.data?._id)
-    // const members = useSelector(state => state.conversationReducer.getConversation.data)
-    // console.log("currentConversation:: ", currentConversation);
-    // console.log("messages:: ", messages, userId);
+    // console.log(currentConversation);
+    const usersList = useSelector(state => state.conversationReducer.getConversation.data)
+    const onlineFriends = useSelector(state => state.conversationReducer.setOnlineFriends?.data)
+    const online = onlineFriends?.filter(u => u.userId === currentConversation?.user._id).length === 1
+    const typers = useSelector(state => state.messagesReducer.setTypers?.data)
+    const isTyping = typers?.filter(t => (t.userId === currentConversation?.user._id) && t.conversationId === currentConversation.conversationId && t.typing).length > 0
 
     // socket io
     useEffect(() => {
+        console.log("useEffect currentConversation socket: ", currentConversation);
         socket.current = io(ENDPOINT)
         socket.current.on("getMessage", data => {
             const { senderId, text } = data
-            dispatch(setArrivalMessage({ senderId, text, createdAt: Date.now() }))
+            setArrivalMsg({ senderId, text, createdAt: Date.now() })
         })
     }, [])
 
     useEffect(() => {
+        socket.current.on("getTypers", typers => {
+            console.log("typers: ", typers);
+            dispatch(setTypers(typers))
+        })
+    }, [])
+
+    useEffect(() => {
+        currentConversation?.members?.includes(arrivalMsg?.senderId) ?
+            dispatch(setArrivalMessage(arrivalMsg)) :
+            (arrivalMsg?.text && addNotification({
+                title: "New message received",
+                message: arrivalMsg?.text,
+                duration: 4000,
+                icon: logo,
+                native: true,
+                onClick: () => {
+                    dispatch(openChatBox())
+                    const ownConv = usersList.filter(e => e.members[1] === arrivalMsg?.senderId)
+                    dispatch(getMessages(ownConv[0]._id))
+                    dispatch(setCurrentConversation({ conversationId: ownConv[0]._id, members: ownConv[0].members, user: userData }))
+                }
+            }))
+    }, [arrivalMsg])
+    console.log("userData userData userData: ", userData);
+    useEffect(() => {
+        console.log("onlineFriends onlineFriends onlineFriends: ", onlineFriends);
+    }, [onlineFriends])
+
+    useEffect(() => {
+        if (!userId) return;
         socket.current.emit("addUser", userId)
         socket.current.on("getUsers", users => {
-            console.log("users: ", users);
             dispatch(setOnlineFriends(users))
         })
     }, [socket, userId])
 
-    // useEffect(() => {
-    //     // socket?.on("welcome", message => {
-    //     //     console.log("socket message: ", message);
-    //     // })
-    //     socket.emit("addUser", userId)
-    // }, [socket])
-    // console.log(socket);
+    const handleChange = (e) => {
+        const timeLength = 1500;
+        setNewMessage(e.target.value)
+        const stopTypingTime = () => {
+            setTyping(false)
+            socket.current.emit("stop typing", userId, currentConversation.conversationId)
+        }
+
+        // handle typing
+        if (!typing) {
+            setTyping(true)
+            socket.current.emit("typing", userId, currentConversation.conversationId)
+            setTypingTimeout(setTimeout(stopTypingTime, timeLength));
+        } else {
+            clearTimeout(typingTimeout)
+            setTypingTimeout(setTimeout(stopTypingTime, timeLength));
+        }
+    }
+
     const handleSend = async () => {
         const receiverId = currentConversation.members?.find(member => member !== userId)
         socket.current.emit("sendMessage", { senderId: userId, receiverId, text: newMessage })
-
         const message = { conversationId: currentConversation.conversationId, senderId: userId, text: newMessage }
         dispatch(addMessage(message))
         setNewMessage("")
@@ -75,14 +121,14 @@ const ChatBox = () => {
         <>
             {profileSec && <ProfileSec />}
             {searchFriendBox && <FindUser />}
-            {(!openChatBox && !searchFriendBox && !profileSec) && <div className='w-full sm:rounded-t-2xl shadow bg-sky-50 dark:bg-gray-800 relative hidden sm:flex justify-center items-center'>
+            {(!showChatBox && !searchFriendBox && !profileSec) && <div className='w-full sm:rounded-t-2xl shadow bg-sky-50 dark:bg-gray-800 relative hidden sm:flex justify-center items-center'>
                 <div className='text-center'>
                     <span className='text-lg mb-4 dark:text-white'>Open a converation to start a chat</span><br />
                     <span className='text-sm dark:text-white'>🔒Your personel messages are secured</span>
                 </div>
             </div>}
-            {openChatBox && <div className={'flex flex-col w-full sm:rounded-t-2xl shadow bg-sky-50 dark:bg-gray-800 relative'}>
-                <ChatBoxHeader />
+            {showChatBox && <div className={'flex flex-col w-full sm:rounded-t-2xl shadow bg-sky-50 dark:bg-gray-800 relative'}>
+                <ChatBoxHeader online={online} isTyping={isTyping} />
                 {messages?.length > 0 ?
                     <div className="overflow-y-auto">
                         {messages?.map(msg => (
@@ -90,6 +136,7 @@ const ChatBox = () => {
                                 <Message id={msg.id} {...msg} own={userId === msg.senderId} />
                             </div>
                         ))}
+                        {isTyping && <LoadingMessage />}
                     </div> :
                     <div className="flex flex-col grow items-center justify-center">
                         <img src={waving} alt="waving" className='-rotate-12' width={65} />
@@ -104,7 +151,7 @@ const ChatBox = () => {
                             name="message"
                             id="message"
                             value={newMessage}
-                            onChange={(e) => setNewMessage(e.target.value)}
+                            onChange={handleChange}
                             placeholder="Try something..."
                             className="block w-full rounded-md border-0 py-1.5 px-3.5 text-gray-900  ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-400 sm:text-sm sm:leading-6 focus-visible:outline-none ms-3 me-1 dark:bg-gray-600 dark:ring-gray-500 dark:text-white"
                         />
@@ -113,8 +160,7 @@ const ChatBox = () => {
                         </button>
                     </div>
                 </div>
-            </div >
-            }
+            </div >}
         </>
     )
 }

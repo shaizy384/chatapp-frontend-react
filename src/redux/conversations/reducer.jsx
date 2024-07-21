@@ -51,7 +51,6 @@ const conversationReducer = (state = initial_state, { type, payload }) => {
         case CREATE_CONVERSATION:
             return { ...state, createConversation: { loading: true } }
         case CREATE_CONVERSATION_SUCCESS:
-            console.log("after creating conv: ", state.getConversation.data, payload)
             return {
                 ...state,
                 createConversation: {
@@ -80,20 +79,11 @@ const conversationReducer = (state = initial_state, { type, payload }) => {
             }
 
         case CHAT_LIST_FILTER:
-            // console.log("filter: ", payload, state.getConversation.data, state.setOnlineFriends.data);
-            // const filterUsers = state.getConversation.data.filter(user => state.setOnlineFriends.data.includes(user.userId))
-            // console.log("filter: ", state.setOnlineFriends.data.some(u => u.userId === "654b28bbea6fe482175b3e46"))
-            // console.log("filter: ", state.getConversation.data.filter(user => state.setOnlineFriends.data.some(u => u.userId === user.members[1])))
-            // const filteredConversation = state.getConversation.data.filter(user => state.setOnlineFriends.data.some(u => u.userId === user.members[1]))
             return {
                 ...state,
                 chatListFilter: {
                     data: payload
                 },
-                // getConversation: {
-                //     loading: false,
-                //     data: filteredConversation
-                // }
             }
 
         case SEARCH_FRIEND:

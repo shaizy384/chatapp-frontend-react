@@ -1,32 +1,52 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { getUserData } from '../redux/userData/action';
+import axios from 'axios';
 
-export const PublicRoute = ({ children }) => {
+export const PublicRoute = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const isAuthenticated = useSelector((state) => state.authReducer.isAuthenticated);
-    // const isVerified = useSelector((state) => state);
+    const provider = useSelector((state) => state.authReducer.provider);
+    console.log("provider", provider);
     const userData = useSelector((state) => state.userDataReducer.data);
-    // console.log("auth: ", isAuthenticated, userData);
     useEffect(() => {
-        if (!userData) {
+        if (isAuthenticated && !userData) {
             dispatch(getUserData())
-            console.log("amb:: ", userData);
         }
-    }, [userData])
+    }, [isAuthenticated, userData])
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const data = await axios.get("http://localhost:2800/auth/login/success",
+                    { withCredentials: true }
+                );
+                console.log("g user data", data.data.auth);
+                localStorage.setItem("authToken", data.data.auth);
+                return data;
+            } catch (err) {
+                return console.error(err);
+            }
+        }
+        (provider !== "custom") && getUser()
+
+
+        if (isAuthenticated) {
+            if (userData && userData.isVerified) {
+                return navigate('/')
+            } else if (userData && !userData.isVerified) {
+                return navigate('/verifyemail')
+            }
+        }
+    }, [isAuthenticated])
     if (isAuthenticated) {
-        if (userData?.isVerified) {
-            return navigate('/home')
-        } else{
+        if (userData && userData.isVerified) {
+            return navigate('/')
+        } else if (userData && !userData.isVerified) {
             return navigate('/verifyemail')
         }
     }
-    // console.log("auth: ");
-    // if (isAuthorized) {
-    //     return <Navigate to="/admin/" />;
-    // }
     return (
         <>
             {<Outlet />}

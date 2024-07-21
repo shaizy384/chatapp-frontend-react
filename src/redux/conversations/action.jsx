@@ -18,11 +18,10 @@ export const getConversations = () => async (dispatch) => {
 export const createConversations = (data) => async (dispatch) => {
     dispatch({ type: CREATE_CONVERSATION })
     const url = "chats/"
-    console.log("dispatching: ", data);
+    console.log("crete con: ", data);
     const Data = await callApi(url, 'POST', data, true);
     if (Data?.status === 200) {
         dispatch({ type: CREATE_CONVERSATION_SUCCESS, payload: Data?.data.data })
-        // dispatch({ type: GET_CONVERSATIONS })
         dispatch(getMessages(Data?.data.data.members[1]))
         dispatch(setCurrentConversation({ conversationId: Data?.data.data.members[1], members: Data?.data.data.members }))
     } else {

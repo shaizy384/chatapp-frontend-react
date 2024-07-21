@@ -1,7 +1,7 @@
-import { LOGIN, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT } from "../actionTypes";
+import { LOGIN, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT, SET_PROVIDER } from "../actionTypes";
 
 const initial_state = {
-    // token: localStorage.getItem('authToken'),
+    token: localStorage.getItem('authToken'),
     isAuthenticated:
         localStorage.getItem('authToken') && localStorage.getItem('authToken') !== undefined
             ? true
@@ -9,16 +9,19 @@ const initial_state = {
     isVerified: false,
     message: null,
     loading: false,
+    provider: localStorage.getItem("provider") || "custom",
 };
 
 const authReducer = (state = initial_state, { type, payload }) => {
     switch (type) {
+        case SET_PROVIDER:
+            return { ...state, provider: payload };
+
         case LOGIN:
             return { ...state, loading: true };
 
         case LOGIN_SUCCESS:
             localStorage.setItem("authToken", payload.auth);
-            console.log(payload);
             return {
                 ...state,
                 loading: false,
@@ -34,6 +37,7 @@ const authReducer = (state = initial_state, { type, payload }) => {
 
         case LOGOUT:
             localStorage.removeItem("authToken");
+            localStorage.removeItem("provider");
             return {
                 ...state,
                 loading: false,

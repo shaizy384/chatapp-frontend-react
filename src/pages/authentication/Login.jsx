@@ -4,7 +4,7 @@ import AuthForm from './AuthForm'
 const Login = () => {
     return (
         <div>
-            <AuthForm type="login"/>
+            <AuthForm type="login" />
         </div>
     )
 }
