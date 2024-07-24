@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { loginUser, setProvider } from '../../redux/auth/action';
 import { useDispatch, useSelector } from 'react-redux';
 import { signupUser } from '../../redux/register/action';
@@ -9,6 +9,7 @@ import google from '../../assets/images/google.png'
 import facebook from '../../assets/images/facebook.png'
 import loader from '../../assets/svgs/loader copy.svg'
 import { uploadProfile } from '../../redux/uploadPic/action';
+import AuthHeaader from '../../components/AuthHeaader';
 
 const AuthForm = ({ type }) => {
     const fileInpRef = useRef()
@@ -61,12 +62,12 @@ const AuthForm = ({ type }) => {
         localStorage.setItem("provider", "google")
         window.open("http://localhost:2800/auth/facebook/", "_self")
     }
-    const emailPattern =
-        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zAZ0-9-]+(?:\.[a-zAZ0-9-]+)*$/;
+    const emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
     return (
         <div>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+                {/* <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <div className="flex items-center justify-center gap-2">
                         <img
                             width="40"
@@ -79,7 +80,8 @@ const AuthForm = ({ type }) => {
                     <h2 className="mt-9 text-start text-xl font-medium leading-9 tracking-tight text-gray-900">
                         {type === 'login' ? "Sign in to" : "Register"} your account
                     </h2>
-                </div>
+                </div> */}
+                <AuthHeaader text={`${type === 'login' ? "Sign in to" : "Register"} your account`} />
 
                 <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -117,7 +119,7 @@ const AuthForm = ({ type }) => {
                                             required: "Name is required"
                                         })}
                                     />
-                                    <span className='text-rose-500'>{errors.name?.message}</span>
+                                    <span className='text-rose-500 text-sm'>{errors.name?.message}</span>
                                 </div>
                             </div>
                         </>}
@@ -138,16 +140,16 @@ const AuthForm = ({ type }) => {
                                         },
                                     })}
                                 />
-                                <span className='text-rose-500'>{errors.email?.message}</span>
+                                <span className='text-rose-500 text-sm'>{errors.email?.message}</span>
                             </div>
                         </div>
                         <div>
                             <div className="flex items-center justify-between">
                                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">Password</label>
                                 {type === 'login' && <div className="text-sm">
-                                    <a href="#" className="font-semibold text-sky-400 hover:text-sky-500">
+                                    <NavLink to="/forgot-password" className="font-semibold text-sky-400 hover:text-sky-500">
                                         Forgot password?
-                                    </a>
+                                    </NavLink>
                                 </div>}
                             </div>
                             <div className="mt-2">
@@ -165,7 +167,7 @@ const AuthForm = ({ type }) => {
                                         }
                                     })}
                                 />
-                                <span className='text-rose-500'>{errors.password?.message}</span>
+                                <span className='text-rose-500 text-sm'>{errors.password?.message}</span>
                             </div>
                         </div>
 

@@ -7,6 +7,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Layout from '../layout';
 import { PublicRoute } from './PublicRoutes';
+import Forgot from '../pages/authentication/Forgot';
+import ResetPassword from '../pages/authentication/ResetPassword';
 
 const Routers = () => {
   return (
@@ -33,6 +35,8 @@ const Routers = () => {
           <Route exact path='/' element={<PublicRoute />}>
             <Route exact path='login' element={<Login />} />
             <Route exact path='register' element={<Register />} />
+            <Route exact path='forgot-password' element={<Forgot />} />
+            <Route exact path='/reset-password/:id/:token' element={<ResetPassword />} />
           </Route>
         </Routes>
       </BrowserRouter>

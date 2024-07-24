@@ -184,7 +184,7 @@ const ProfileSec = () => {
                                     required: "Name is required"
                                 })}
                             />
-                            <span className='text-rose-500'>{errors.name?.message}</span>
+                            <span className='text-rose-500 text-sm'>{errors.name?.message}</span>
                         </div>
                     </div>
                     <div>
@@ -204,7 +204,7 @@ const ProfileSec = () => {
                                     },
                                 })}
                             />
-                            <span className='text-rose-500'>{errors.email?.message}</span>
+                            <span className='text-rose-500 text-sm'>{errors.email?.message}</span>
                         </div>
                     </div>
                     {/* <div>
@@ -226,7 +226,7 @@ const ProfileSec = () => {
                             // }
                             // })}
                             />
-                            <span className='text-rose-500'>{errors.password?.message}</span>
+                            <span className='text-rose-500 text-sm'>{errors.password?.message}</span>
                         </div>
                     </div> */}
 
