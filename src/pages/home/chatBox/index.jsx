@@ -4,7 +4,7 @@ import Message from '../../../components/Message'
 import { useDispatch, useSelector } from 'react-redux'
 import { addMessage, getMessages, setArrivalMessage, setCurrentConversation, setTypers } from '../../../redux/messages/action'
 import { io } from 'socket.io-client'
-import { setOnlineFriends } from '../../../redux/conversations/action'
+import { setOnlineFriends, updateConversation, updateLastMsg } from '../../../redux/conversations/action'
 import FindUser from './FindUser'
 import waving from '../../../assets/images/waving.gif'
 import ProfileSec from './ProfileSec'
@@ -43,8 +43,8 @@ const ChatBox = () => {
         console.log("useEffect currentConversation socket: ", currentConversation);
         socket.current = io(ENDPOINT)
         socket.current.on("getMessage", data => {
-            const { senderId, text } = data
-            setArrivalMsg({ senderId, text, createdAt: Date.now() })
+            const { senderId, text, conversationId, unseen_msgs } = data
+            setArrivalMsg({ senderId, text, createdAt: Date.now(), conversationId, unseen_msgs })
         })
     }, [])
 
@@ -56,21 +56,29 @@ const ChatBox = () => {
     }, [])
 
     useEffect(() => {
-        currentConversation?.members?.includes(arrivalMsg?.senderId) ?
-            dispatch(setArrivalMessage(arrivalMsg)) :
-            (arrivalMsg?.text && addNotification({
-                title: "New message received",
-                message: arrivalMsg?.text,
-                duration: 4000,
-                icon: logo,
-                native: true,
-                onClick: () => {
-                    dispatch(openChatBox())
-                    const ownConv = usersList.filter(e => e.members[1] === arrivalMsg?.senderId)
-                    dispatch(getMessages(ownConv[0]._id))
-                    dispatch(setCurrentConversation({ conversationId: ownConv[0]._id, members: ownConv[0].members, user: userData }))
-                }
-            }))
+        if (currentConversation?.members?.includes(arrivalMsg?.senderId)) {
+            dispatch(setArrivalMessage(arrivalMsg))
+        } else {
+            if (arrivalMsg?.text) {
+                console.log("arrivalMsgarrivalMsg : ", arrivalMsg);
+                const upConversation = { receiverId: userId, last_message: arrivalMsg?.text, unseen_msgs: arrivalMsg?.unseen_msgs, _id: arrivalMsg?.conversationId }
+
+                dispatch(updateConversation(upConversation))
+                addNotification({
+                    title: "New message received",
+                    message: arrivalMsg?.text,
+                    duration: 4000,
+                    icon: logo,
+                    native: true,
+                    onClick: () => {
+                        dispatch(openChatBox())
+                        const ownConv = usersList.filter(e => e.members[1] === arrivalMsg?.senderId)
+                        dispatch(getMessages(ownConv[0]._id))
+                        dispatch(setCurrentConversation({ conversationId: ownConv[0]._id, members: ownConv[0].members, user: userData }))
+                    }
+                })
+            }
+        }
     }, [arrivalMsg])
     console.log("userData userData userData: ", userData);
     useEffect(() => {
@@ -105,9 +113,15 @@ const ChatBox = () => {
     }
 
     const handleSend = async () => {
+        // currentConversation.last_message = newMessage
+        dispatch(updateLastMsg({ message: newMessage, _id: currentConversation?.conversationId }))
         const receiverId = currentConversation.members?.find(member => member !== userId)
-        socket.current.emit("sendMessage", { senderId: userId, receiverId, text: newMessage })
+        console.log("currentConversationcurrentConversation : ", currentConversation);
+        socket.current.emit("sendMessage", {
+            senderId: userId, receiverId, text: newMessage, conversationId: currentConversation?.conversationId, unseen_msgs: currentConversation?.unseen_msgs ? (currentConversation?.unseen_msgs + 1) : 1
+        })
         const message = { conversationId: currentConversation.conversationId, senderId: userId, text: newMessage }
+        // const up = {receiverId,las}
         dispatch(addMessage(message))
         setNewMessage("")
     }

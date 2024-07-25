@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { callApi } from "../../apis/APIs";
-import { CHAT_LIST_FILTER, CREATE_CONVERSATION, CREATE_CONVERSATION_FAILURE, CREATE_CONVERSATION_SUCCESS, EMPTY_FIND_FRIEND, EMPTY_SEARCH_FRIEND, FIND_FRIEND, FIND_FRIEND_FAILURE, FIND_FRIEND_SUCCESS, GET_CONVERSATIONS, GET_CONVERSATIONS_FAILURE, GET_CONVERSATIONS_SUCCESS, SEARCH_FRIEND, SET_ONLINE_FRIENDS } from "../actionTypes"
+import { CHAT_LIST_FILTER, CREATE_CONVERSATION, CREATE_CONVERSATION_FAILURE, CREATE_CONVERSATION_SUCCESS, EMPTY_FIND_FRIEND, EMPTY_SEARCH_FRIEND, FIND_FRIEND, FIND_FRIEND_FAILURE, FIND_FRIEND_SUCCESS, GET_CONVERSATIONS, GET_CONVERSATIONS_FAILURE, GET_CONVERSATIONS_SUCCESS, SEARCH_FRIEND, SET_ONLINE_FRIENDS, UPDATE_CONVERSATION, UPDATE_CONVERSATION_FAILURE, UPDATE_CONVERSATION_SUCCESS, UPDATE_LAST_MESSAGE } from "../actionTypes"
 import { getMessages, setCurrentConversation } from "../messages/action";
 
 export const getConversations = () => async (dispatch) => {
@@ -13,6 +13,28 @@ export const getConversations = () => async (dispatch) => {
         dispatch({ type: GET_CONVERSATIONS_FAILURE })
         toast.error(Data?.data.message)
     }
+}
+
+export const updateConversation = (data) => async (dispatch) => {
+    dispatch({ type: UPDATE_CONVERSATION })
+    const url = "chats/update"
+    console.log("crete con: ", data);
+    const Data = await callApi(url, 'POST', data, true);
+    if (Data?.status === 200) {
+        dispatch({ type: UPDATE_CONVERSATION_SUCCESS, payload: Data?.data.data })
+        // dispatch(getConversations())
+        // dispatch(getMessages(Data?.data.data.members[1]))
+        // dispatch(setCurrentConversation({ conversationId: Data?.data.data.members[1], members: Data?.data.data.members }))
+    } else {
+        dispatch({ type: UPDATE_CONVERSATION_FAILURE })
+    }
+}
+
+export const updateLastMsg = (data) => {
+    return ({
+        type: UPDATE_LAST_MESSAGE,
+        payload: data
+    })
 }
 
 export const createConversations = (data) => async (dispatch) => {
