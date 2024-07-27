@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const UploadAPI = async (url, requestType, body, auth) => {
-    let host = "https://api.cloudinary.com/v1_1/shaizycreation/";
+    let host = process.env.REACT_APP_BACKEND_UPLOAD_API;
     let token = localStorage.getItem("authToken");
 
     if (requestType === "GET") {
