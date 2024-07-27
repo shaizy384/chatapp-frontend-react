@@ -82,7 +82,7 @@ const AuthForm = ({ type }) => {
                         name: res?.data?.name,
                         photoURL: res?.data?.picture,
                         accountId: res?.data?.id,
-                        isVerified: res?.data?.email_verified,
+                        isVerified: res?.data?.verified_email,
                         // social_token: socialUser?.access_token,
                     }))
                     localStorage.setItem('profile', JSON.stringify(res.data));
