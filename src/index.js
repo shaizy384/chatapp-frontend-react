@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './redux/store';
 import loader from './assets/images/chat-animation-2.gif';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 function Loading() {
   return (
@@ -20,12 +21,14 @@ function Loading() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <Suspense fallback={<Loading />}>
-        <App />
-        {/* <Loading /> */}
-      </Suspense>
-    </Provider>
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+      <Provider store={store}>
+        <Suspense fallback={<Loading />}>
+          <App />
+          {/* <Loading /> */}
+        </Suspense>
+      </Provider>
+    </GoogleOAuthProvider>
   </React.StrictMode>
 );
 

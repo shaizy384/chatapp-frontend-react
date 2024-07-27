@@ -1,4 +1,4 @@
-import { FORGOT_PASSWORD, FORGOT_PASSWORD_FAILURE, FORGOT_PASSWORD_SUCCESS, LOGIN, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT, EMPTY_FORGOT_PASSWORD, RESET_PASSWORD, RESET_PASSWORD_FAILURE, RESET_PASSWORD_SUCCESS, SET_PROVIDER } from "../actionTypes";
+import { FORGOT_PASSWORD, FORGOT_PASSWORD_FAILURE, FORGOT_PASSWORD_SUCCESS, LOGIN, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT, EMPTY_FORGOT_PASSWORD, RESET_PASSWORD, RESET_PASSWORD_FAILURE, RESET_PASSWORD_SUCCESS, SET_PROVIDER, SOCIAL_LOGIN, SOCIAL_LOGIN_SUCCESS, SOCIAL_LOGIN_FAILURE } from "../actionTypes";
 
 const initial_state = {
     token: localStorage.getItem('authToken'),
@@ -19,7 +19,7 @@ const initial_state = {
         message: null,
         loading: false,
         success: false,
-    }
+    },
 };
 
 const authReducer = (state = initial_state, { type, payload }) => {
@@ -40,6 +40,24 @@ const authReducer = (state = initial_state, { type, payload }) => {
             };
 
         case LOGIN_FAILURE:
+            return {
+                ...state,
+                loading: false,
+            };
+
+        case SOCIAL_LOGIN:
+            return { ...state, loading: true };
+
+        case SOCIAL_LOGIN_SUCCESS:
+            localStorage.setItem("authToken", payload.auth);
+            return {
+                ...state,
+                loading: false,
+                isAuthenticated: true,
+                isVerified: payload.isVerified,
+            };
+
+        case SOCIAL_LOGIN_FAILURE:
             return {
                 ...state,
                 loading: false,

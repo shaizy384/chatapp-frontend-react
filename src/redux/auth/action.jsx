@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { callApi } from "../../apis/APIs";
-import { FORGOT_PASSWORD, FORGOT_PASSWORD_FAILURE, FORGOT_PASSWORD_SUCCESS, LOGIN, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT, EMPTY_FORGOT_PASSWORD, RESET_PASSWORD, RESET_PASSWORD_FAILURE, RESET_PASSWORD_SUCCESS, SET_PROVIDER } from "../actionTypes"
+import { FORGOT_PASSWORD, FORGOT_PASSWORD_FAILURE, FORGOT_PASSWORD_SUCCESS, LOGIN, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT, EMPTY_FORGOT_PASSWORD, RESET_PASSWORD, RESET_PASSWORD_FAILURE, RESET_PASSWORD_SUCCESS, SET_PROVIDER, SOCIAL_LOGIN, SOCIAL_LOGIN_SUCCESS, SOCIAL_LOGIN_FAILURE } from "../actionTypes"
 
 export const loginUser = (data) => async (dispatch) => {
     dispatch({ type: LOGIN })
@@ -50,6 +50,18 @@ export const setProvider = (data) => {
         type: SET_PROVIDER,
         payload: data,
     })
+}
+
+export const socialLogin = (data) => async (dispatch) => {
+    dispatch({ type: SOCIAL_LOGIN })
+    const url = "user/social_login"
+    const Data = await callApi(url, 'POST', data, true);
+    if (Data?.status === 200) {
+        dispatch({ type: SOCIAL_LOGIN_SUCCESS, payload: Data?.data })
+    } else {
+        dispatch({ type: SOCIAL_LOGIN_FAILURE })
+        toast.error(Data?.data.message)
+    }
 }
 
 export const Logout = () => {

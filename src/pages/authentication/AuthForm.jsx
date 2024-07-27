@@ -1,7 +1,7 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { Link, NavLink } from 'react-router-dom'
-import { loginUser, setProvider } from '../../redux/auth/action';
+import { loginUser, setProvider, socialLogin } from '../../redux/auth/action';
 import { useDispatch, useSelector } from 'react-redux';
 import { signupUser } from '../../redux/register/action';
 import logo from '../../assets/images/logo.png'
@@ -10,9 +10,12 @@ import facebook from '../../assets/images/facebook.png'
 import loader from '../../assets/svgs/loader copy.svg'
 import { uploadProfile } from '../../redux/uploadPic/action';
 import AuthHeaader from '../../components/AuthHeaader';
+import { GoogleLogin, googleLogout, useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 
 const AuthForm = ({ type }) => {
     const fileInpRef = useRef()
+    const [socialUser, setSocialUser] = useState(null)
     const user = useSelector(state => state.authReducer)
     const imageLoading = useSelector(state => state.uploadPicReducer.uploadPic?.loading)
     const imageURL = useSelector(state => state.uploadPicReducer.uploadPic?.data)
@@ -51,12 +54,44 @@ const AuthForm = ({ type }) => {
                 dispatch(signupUser(data));
         }
     };
+
+    const handleUseGoogle = useGoogleLogin({
+        onSuccess: tokenResponse => setSocialUser(tokenResponse),
+    });
     const handleGoogle = () => {
-        const google = window.open("http://localhost:2800/auth/google/", "_self")
+        // const google = window.open("http://localhost:2800/auth/google/", "_self")
         console.log("google login: ", google);
         dispatch(setProvider("google"))
         localStorage.setItem("provider", "google")
+        handleUseGoogle()
     }
+    useEffect(() => {
+        console.log("socialUser: ", socialUser);
+        if (socialUser?.access_token) {
+            axios
+                .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${socialUser.access_token}`, {
+                    headers: {
+                        Authorization: `Bearer ${socialUser.access_token}`,
+                        Accept: 'application/json'
+                    }
+                })
+                .then((res) => {
+                    dispatch(socialLogin({
+                        provider: "google",
+                        email: res?.data?.email,
+                        name: res?.data?.name,
+                        photoURL: res?.data?.picture,
+                        accountId: res?.data?.id,
+                        isVerified: res?.data?.email_verified,
+                        // social_token: socialUser?.access_token,
+                    }))
+                    localStorage.setItem('profile', JSON.stringify(res.data));
+                    console.log(res.data)
+                })
+                .catch((err) => console.log(err));
+        }
+    }, [socialUser]);
+
     const handleFacebook = () => {
         dispatch(setProvider("facebook"))
         localStorage.setItem("provider", "google")

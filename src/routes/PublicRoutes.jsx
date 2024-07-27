@@ -17,19 +17,19 @@ export const PublicRoute = () => {
         }
     }, [isAuthenticated, userData])
     useEffect(() => {
-        const getUser = async () => {
-            try {
-                const data = await axios.get("http://localhost:2800/auth/login/success",
-                    { withCredentials: true }
-                );
-                console.log("g user data", data.data.auth);
-                localStorage.setItem("authToken", data.data.auth);
-                return data;
-            } catch (err) {
-                return console.error(err);
-            }
-        }
-        (provider !== "custom") && getUser()
+        // const getUser = async () => {
+        //     try {
+        //         const data = await axios.get("http://localhost:2800/auth/login/success",
+        //             { withCredentials: true }
+        //         );
+        //         console.log("g user data", data.data.auth);
+        //         localStorage.setItem("authToken", data.data.auth);
+        //         return data;
+        //     } catch (err) {
+        //         return console.error(err);
+        //     }
+        // }
+        // (provider !== "custom") && getUser()
 
 
         if (isAuthenticated) {
@@ -40,6 +40,7 @@ export const PublicRoute = () => {
             }
         }
     }, [isAuthenticated])
+    
     if (isAuthenticated) {
         if (userData && userData.isVerified) {
             return navigate('/')
