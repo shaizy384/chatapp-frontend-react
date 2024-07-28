@@ -13,7 +13,7 @@ import logo from '../../../assets/images/logo.png'
 import { openChatBox } from '../../../redux/openChatBox/action'
 import LoadingMessage from '../../../components/LoadingMessage'
 
-const ENDPOINT = REACT_APP_BACKEND_HOST // backend_host
+const ENDPOINT = process.env.REACT_APP_BACKEND_HOST // backend_host
 
 const ChatBox = () => {
     const socket = useRef()
