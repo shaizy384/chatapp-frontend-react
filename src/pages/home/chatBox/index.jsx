@@ -41,11 +41,7 @@ const ChatBox = () => {
     // socket io
     useEffect(() => {
         console.log("useEffect currentConversation socket: ", currentConversation);
-        socket.current = io(ENDPOINT, {
-            // WARNING: in that case, there is no fallback to long-polling
-            transports: ["websocket", "polling"]
-            // transports: ["websocket"] // or [ "websocket", "polling" ] (the order matters)
-        })
+        socket.current = io(ENDPOINT)
         socket.current.on("getMessage", data => {
             const { senderId, text, conversationId, unseen_msgs } = data
             setArrivalMsg({ senderId, text, createdAt: Date.now(), conversationId, unseen_msgs })
